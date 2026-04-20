@@ -8,111 +8,51 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cor-primaria: #D32F2F; 
-            --cor-texto: #1A202C;
-            --cor-fundo: #F8FAFC;
-            --border: #CBD5E1;
-            --ok: #38A169;
-            --alerta: #D69E2E;
-            --perigo: #E53E3E;
+            --cor-primaria: #D32F2F; --cor-texto: #1A202C; --cor-fundo: #F8FAFC;
+            --border: #CBD5E1; --ok: #38A169; --alerta: #D69E2E; --perigo: #E53E3E;
             --destaque-azul: #63B3ED;
         }
-
         * { box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto);
-            margin: 0; padding: 8px;
-            height: 100vh; overflow: hidden;
-            display: flex; justify-content: center;
-        }
-
-        .dashboard {
-            display: grid; grid-template-columns: 1fr 340px;
-            gap: 12px; width: 100%; max-width: 1500px; height: 100%;
-        }
-
-        .secao-notas {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(5, 1fr); gap: 8px; height: 100%;
-        }
-
-        .card-valor {
-            background: #fff; border: 1px solid var(--border);
-            border-radius: 8px; display: flex; align-items: center; overflow: hidden;
-        }
-
-        .card-valor span {
-            background: #EDF2F7; padding: 0 10px; height: 100%;
-            display: flex; align-items: center; font-weight: 800;
-            font-size: 13px; min-width: 75px; border-right: 1px solid var(--border);
-        }
-
-        .card-valor input {
-            width: 100%; border: none; padding: 6px 12px;
-            font-size: 30px; font-weight: 800; text-align: right; outline: none;
-        }
-
+        body { font-family: 'Inter', sans-serif; background-color: var(--cor-fundo); color: var(--cor-texto); margin: 0; padding: 8px; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
+        .dashboard { display: grid; grid-template-columns: 1fr 340px; gap: 12px; width: 100%; max-width: 1500px; height: 100%; }
+        .secao-notas { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); gap: 8px; height: 100%; }
+        .card-valor { background: #fff; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; overflow: hidden; }
+        .card-valor span { background: #EDF2F7; padding: 0 10px; height: 100%; display: flex; align-items: center; font-weight: 800; font-size: 13px; min-width: 75px; border-right: 1px solid var(--border); }
+        .card-valor input { width: 100%; border: none; padding: 6px 12px; font-size: 30px; font-weight: 800; text-align: right; outline: none; }
         .reserva-destaque { border: 2px solid #F6AD55; background: #FFFAF0; }
         .reserva-destaque span { background: #F6AD55; color: #fff; }
-
         .invalid { border: 2px solid var(--perigo) !important; background: #FFF5F5 !important; }
-
         .sidebar { display: flex; flex-direction: column; gap: 10px; }
         .card-lateral { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
         .header-loja { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--cor-fundo); padding-bottom: 8px; margin-bottom: 8px; gap: 10px; }
         .header-loja img { height: 30px; }
         .header-loja #txt-loja { font-weight: 800; color: var(--cor-primaria); font-size: 16px; white-space: nowrap; }
-
         label { display: block; font-size: 10px; font-weight: 700; color: #64748B; margin-bottom: 3px; }
         .input-sidebar { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-weight: 600; margin-bottom: 10px; font-size: 14px; }
-
         #gix { height: 48px; font-size: 26px; font-weight: 800; text-align: right; color: var(--cor-primaria); background: #FFF5F5; border-color: #FED7D7; }
-
         .resultados { background: #1A202C; color: #fff; border-radius: 10px; padding: 14px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .resumo-info { margin-bottom: 12px; }
         #total-geral { font-size: 34px; font-weight: 900; display: block; }
         #total-dif { font-size: 26px; font-weight: 800; }
         .dif-row { display: flex; align-items: baseline; gap: 8px; }
         .label-fluxo { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--destaque-azul); letter-spacing: 1px; }
-
-        /* Aviso de Sangria */
-        #aviso-sangria {
-            background: #FFF5F5; color: var(--perigo); border: 1px solid #FEB2B2;
-            padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 800;
-            text-align: center; margin-bottom: 10px; display: none;
-        }
-
+        #aviso-sangria { background: #FFF5F5; color: var(--perigo); border: 1px solid #FEB2B2; padding: 8px; border-radius: 6px; font-size: 10px; font-weight: 700; text-align: center; margin-bottom: 10px; display: none; }
         .btn-gravar { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--cor-primaria); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
-        .btn-gravar:disabled { background: #4A5568; cursor: not-allowed; opacity: 0.6; }
-
-        .dif-v { color: var(--ok); }
-        .dif-l { color: var(--alerta); }
-        .dif-r { color: var(--perigo); }
-
+        
         /* Modais */
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
         .modal { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; color: var(--cor-texto); }
-        .modal h3 { margin-top: 0; font-size: 20px; font-weight: 800; }
+        .modal h3 { margin: 0 0 15px 0; font-size: 18px; font-weight: 800; }
         .modal-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #EDF2F7; }
         .modal-row label { font-size: 12px; margin: 0; color: #718096; }
-        .modal-row span { font-weight: 800; font-size: 16px; }
+        .modal-row span { font-weight: 800; font-size: 15px; }
         .btn-modal { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 10px; }
-        .btn-cancelar { background: #EDF2F7; color: #4A5568; }
         .btn-confirmar { background: #2D3748; color: #fff; }
+        .btn-cancelar { background: #EDF2F7; color: #4A5568; }
     </style>
 </head>
-
 <body>
 
-<div id="modal-aviso" class="overlay">
-    <div class="modal">
-        <h3 id="aviso-titulo">Atenção</h3>
-        <p id="aviso-corpo" style="font-size: 14px; color: #4A5568; margin-bottom: 20px;"></p>
-        <button class="btn-modal btn-confirmar" onclick="fecharAviso()">OK</button>
-    </div>
-</div>
+<div id="modal-aviso" class="overlay"><div class="modal"><h3 id="aviso-titulo"></h3><p id="aviso-corpo" style="margin-bottom:20px; font-size:14px;"></p><button class="btn-modal btn-confirmar" onclick="fecharAviso()">OK</button></div></div>
 
 <div id="modal-resumo" class="overlay">
     <div class="modal">
@@ -121,8 +61,7 @@
         <div class="modal-row"><label>Reserva:</label> <span id="m-res"></span></div>
         <div class="modal-row"><label>Contagem Final:</label> <span id="m-total"></span></div>
         <div class="modal-row" style="border:none"><label>Diferença:</label> <span id="m-dif"></span></div>
-        
-        <button class="btn-modal btn-confirmar" id="btn-finalizar" onclick="executarEnvioReal()">GRAVAR E FINALIZAR</button>
+        <button class="btn-modal btn-confirmar" id="btn-envio" onclick="executarEnvioReal()">GRAVAR E FINALIZAR</button>
         <button class="btn-modal btn-cancelar" onclick="fecharResumo()">VOLTAR</button>
     </div>
 </div>
@@ -131,43 +70,30 @@
     <div class="secao-notas" id="grade-notas"></div>
     <div class="sidebar">
         <div class="card-lateral">
-            <div class="header-loja">
-                <img src="./logo.png" onerror="this.src='https://via.placeholder.com/140x30?text=Logo'">
-                <div id="loja-ui"><span id="txt-loja">LOJA --</span></div>
-            </div>
-            <label>Operador</label>
-            <input type="text" id="operador" class="input-sidebar" placeholder="Nome...">
-            <label>Caixa</label>
-            <div id="container-caixa"></div>
-            <label>Saldo GIX (Sistema)</label>
-            <input type="text" id="gix" class="input-sidebar" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0,00">
+            <div class="header-loja"><img src="./logo.png" onerror="this.src='https://via.placeholder.com/140x30?text=Logo'"><div id="loja-ui"><span id="txt-loja">LOJA --</span></div></div>
+            <label>Operador</label><input type="text" id="operador" class="input-sidebar" placeholder="Nome...">
+            <label>Caixa</label><div id="container-caixa"></div>
+            <label>Saldo GIX (Sistema)</label><input type="text" id="gix" class="input-sidebar" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0,00">
         </div>
         <div class="resultados">
-            <div>
-                <div class="resumo-info"><label>Total no Caixa (Cédulas + Reserva)</label><span id="total-geral">R$ 0,00</span></div>
-                <div class="resumo-info"><label>Diferença vs Sistema</label>
-                    <div class="dif-row"><span id="total-dif">R$ 0,00</span><span id="tag-fluxo" class="label-fluxo"></span></div>
-                </div>
+            <div><div class="resumo-info"><label>Total no Caixa</label><span id="total-geral">R$ 0,00</span></div>
+                <div class="resumo-info"><label>Diferença</label><div class="dif-row"><span id="total-dif">R$ 0,00</span><span id="tag-fluxo" class="label-fluxo"></span></div></div>
             </div>
-            
-            <div id="aviso-sangria">⚠️ VALOR TOTAL ACIMA DO RECOMENDADO.<br>CONSIDERE FAZER UMA TRANSFERÊNCIA.</div>
-            
-            <button class="btn-gravar" id="btn-submit" onclick="abrirResumo()">GRAVAR</button>
+            <div id="aviso-sangria">⚠️ VALOR ACIMA DE R$ 1.200,00.<br>CONSIDERE FAZER UMA SANGRIA.</div>
+            <button class="btn-gravar" onclick="abrirResumo()">GRAVAR</button>
         </div>
     </div>
 </div>
 
 <script>
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzhd7CS7JoF3QRuw9eLi7K3HFsxK9erwRdoD2fjyNwvXP1P7QMJXmh7t1jY-Hg-FCKO/exec";
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycby99LFj1FzaPbeDE13kjtMm79qBCpPGbtFgvCruhG1H2RBPAkOpNlWJWH_7a-NcVb4/exec";
 const valoresCédulas = [200, 100, 50, 20, 10, 5, 2, 1, 0.50, 0.25, 0.10, 0.05];
 const configsLojas = { "02": ["220", "230"], "05": ["510", "520"], "09": ["910"], "10": ["100"], "12": ["12"], "13": ["113"], "14": ["114"], "15": ["115"], "16": ["16"] };
-let dadosGlobais = null;
+let dadosEnvio = null;
 
 function montar() {
     const grid = document.getElementById('grade-notas');
-    valoresCédulas.forEach(v => {
-        grid.innerHTML += `<div class="card-valor"><span>R$ ${v.toFixed(2)}</span><input type="text" class="v-input" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0"></div>`;
-    });
+    valoresCédulas.forEach(v => { grid.innerHTML += `<div class="card-valor"><span>R$ ${v.toFixed(2)}</span><input type="text" class="v-input" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0"></div>`; });
     grid.innerHTML += `<div class="card-valor reserva-destaque" style="grid-column: span 2;"><span>RESERVA</span><input type="text" id="reserva" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0"></div>`;
     inicializarLojas();
 }
@@ -177,7 +103,7 @@ function inicializarLojas() {
     const lojaId = params.get('loja');
     if (lojaId && configsLojas[lojaId]) renderizarInputsLoja(lojaId);
     else {
-        let s = `<select id="select-loja-manual" onchange="renderizarInputsLoja(this.value)"><option value="">Selecione...</option>`;
+        let s = `<select id="select-loja-manual" onchange="renderizarInputsLoja(this.value)"><option value="">Loja...</option>`;
         Object.keys(configsLojas).forEach(k => s += `<option value="${k}">Loja ${k}</option>`);
         document.getElementById('loja-ui').innerHTML = s + `</select>`;
         renderizarInputsLoja("");
@@ -189,24 +115,18 @@ function renderizarInputsLoja(id) {
     document.getElementById('txt-loja').innerText = id ? "LOJA " + id : "LOJA --";
     if (id && configsLojas[id]) {
         const cxs = configsLojas[id];
-        if (cxs.length === 1) container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" value="${cxs[0]}" readonly style="background:#f1f5f9;">`;
+        if (cxs.length === 1) container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" value="${cxs[0]}" readonly>`;
         else {
             let s = `<select id="caixa" class="input-sidebar"><option value="">Selecione...</option>`;
             cxs.forEach(c => s += `<option value="${c}">${c}</option>`);
             container.innerHTML = s + `</select>`;
         }
-    } else container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" placeholder="Selecione a loja...">`;
+    } else container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" placeholder="...">`;
 }
 
 function aplicarMascara(el) {
-    let val = el.value.replace(/[^\d,]/g, "");
-    el.value = val;
+    let val = el.value.replace(/[^\d,]/g, ""); el.value = val;
     el.dataset.valorNumerico = parseFloat(val.replace(",", ".")) || 0;
-    const nota = parseFloat(el.dataset.v);
-    if (nota) {
-        const resto = el.dataset.valorNumerico % nota;
-        el.parentElement.classList.toggle('invalid', el.dataset.valorNumerico > 0 && Math.abs(resto) > 0.009 && Math.abs(resto - nota) > 0.009);
-    }
     calcular();
 }
 
@@ -216,79 +136,50 @@ function formatarAoSair(el) {
 }
 
 function calcular() {
-    let soma = 0;
-    document.querySelectorAll('.v-input').forEach(i => soma += parseFloat(i.dataset.valorNumerico) || 0);
+    let soma = 0; document.querySelectorAll('.v-input').forEach(i => soma += parseFloat(i.dataset.valorNumerico) || 0);
     const res = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
     const gix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
-    const total = soma + res;
-    const dif = total - gix;
-    
+    const total = soma + res; const dif = total - gix;
     document.getElementById('total-geral').innerText = fmt(total);
     const dText = document.getElementById('total-dif');
-    const dTag = document.getElementById('tag-fluxo');
     dText.innerText = fmt(dif); dText.className = "";
-    
-    if (dif === 0 || !document.getElementById('gix').value) dTag.innerText = "";
-    else dTag.innerText = dif > 0 ? "Sobra" : "Falta";
-    
-    const absD = Math.abs(dif);
-    if (absD <= 5) dText.classList.add('dif-v'); else if (absD <= 10) dText.classList.add('dif-l'); else dText.classList.add('dif-r');
-
+    document.getElementById('tag-fluxo').innerText = (dif === 0 || !document.getElementById('gix').value) ? "" : (dif > 0 ? "Sobra" : "Falta");
+    if (Math.abs(dif) <= 5) dText.classList.add('dif-v'); else if (Math.abs(dif) <= 10) dText.classList.add('dif-l'); else dText.classList.add('dif-r');
     document.getElementById('aviso-sangria').style.display = (total > 1200) ? 'block' : 'none';
 }
 
 function fmt(v) { return v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }); }
 
-function mostrarAviso(t, m) {
-    document.getElementById('aviso-titulo').innerText = t;
-    document.getElementById('aviso-corpo').innerText = m;
-    document.getElementById('modal-aviso').style.display = 'flex';
-}
+function mostrarAviso(t, m) { document.getElementById('aviso-titulo').innerText = t; document.getElementById('aviso-corpo').innerText = m; document.getElementById('modal-aviso').style.display = 'flex'; }
 function fecharAviso() { document.getElementById('modal-aviso').style.display = 'none'; }
 
 function abrirResumo() {
-    const op = document.getElementById('operador').value;
-    const cx = document.getElementById('caixa').value;
-    const lojaSelect = document.getElementById('select-loja-manual');
-    const lojaId = lojaSelect ? lojaSelect.value : new URLSearchParams(window.location.search).get('loja');
-
-    if (!op || !cx || !lojaId) { 
-        mostrarAviso("Dados Incompletos", "Preencha a Loja, o Operador e o Caixa antes de gravar."); 
-        return; 
-    }
-
+    const op = document.getElementById('operador').value; const cx = document.getElementById('caixa').value;
+    const lojaId = document.getElementById('select-loja-manual')?.value || new URLSearchParams(window.location.search).get('loja');
+    if (!op || !cx || !lojaId) { mostrarAviso("Atenção", "Preencha Loja, Operador e Caixa."); return; }
+    
     const vGix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
     const vRes = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
     const vTotal = parseFloat(document.getElementById('total-geral').innerText.replace(/[R$\s.]/g, "").replace(",", "."));
     const vDif = parseFloat(document.getElementById('total-dif').innerText.replace(/[R$\s.]/g, "").replace(",", "."));
 
-    dadosGlobais = { loja: lojaId, operador: op, caixa: cx, saldoGix: vGix, reserva: vRes, totalContado: vTotal, diferenca: vDif, status: vDif === 0 ? "OK" : document.getElementById('tag-fluxo').innerText };
-
-    document.getElementById('m-gix').innerText = fmt(vGix);
-    document.getElementById('m-res').innerText = fmt(vRes);
-    document.getElementById('m-total').innerText = fmt(vTotal);
-    document.getElementById('m-dif').innerText = fmt(vDif);
-    document.getElementById('m-dif').className = document.getElementById('total-dif').className;
+    dadosEnvio = { loja: lojaId, operador: op, caixa: cx, saldoGix: vGix, reserva: vRes, totalContado: vTotal, diferenca: vDif, status: (vDif === 0 ? "OK" : document.getElementById('tag-fluxo').innerText) };
+    
+    document.getElementById('m-gix').innerText = fmt(vGix); document.getElementById('m-res').innerText = fmt(vRes);
+    document.getElementById('m-total').innerText = fmt(vTotal); document.getElementById('m-dif').innerText = fmt(vDif);
     document.getElementById('modal-resumo').style.display = 'flex';
 }
 
 function fecharResumo() { document.getElementById('modal-resumo').style.display = 'none'; }
 
 async function executarEnvioReal() {
-    const btn = document.getElementById('btn-finalizar');
-    btn.disabled = true; btn.innerText = "GRAVANDO...";
-    
+    const btn = document.getElementById('btn-envio'); btn.disabled = true; btn.innerText = "GRAVANDO...";
     try {
-        await fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dadosGlobais) });
-        btn.innerText = "ENVIADO COM SUCESSO!";
-        btn.style.background = "var(--ok)";
+        await fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dadosEnvio) });
+        btn.innerText = "ENVIADO COM SUCESSO!"; btn.style.background = "var(--ok)";
         setTimeout(() => location.reload(), 1500);
-    } catch (e) {
-        mostrarAviso("Erro", "Falha ao enviar. Tente novamente.");
-        btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE";
-    }
+    } catch (e) { mostrarAviso("Erro", "Falha no envio."); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
 }
-
 montar();
 </script>
 </body>
