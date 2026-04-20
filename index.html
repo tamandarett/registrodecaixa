@@ -192,7 +192,8 @@ function abrirResumo() {
     const vRes = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
     const vTotal = parseFloat(document.getElementById('total-geral').innerText.replace(/[R$\s.]/g, "").replace(",", "."));
     const vDif = vTotal - vGix;
-    dadosEnvio = { loja: lojaId, operador: op, caixa: cx, saldoGix: vGix, reserva: vRes, totalContado: vTotal, dferenca: vDif, status: (vDif === 0 ? "OK" : (vDif > 0 ? "SOBRA" : "FALTA")) };
+    // CORREÇÃO: Chave "diferenca" escrita corretamente agora
+    dadosEnvio = { loja: lojaId, operador: op, caixa: cx, saldoGix: vGix, reserva: vRes, totalContado: vTotal, diferenca: vDif, status: (vDif === 0 ? "OK" : (vDif > 0 ? "SOBRA" : "FALTA")) };
     document.getElementById('m-gix').innerText = fmt(vGix); document.getElementById('m-res').innerText = fmt(vRes);
     document.getElementById('m-total').innerText = fmt(vTotal); 
     const mDif = document.getElementById('m-dif');
