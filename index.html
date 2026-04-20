@@ -23,60 +23,35 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--cor-fundo);
             color: var(--cor-texto);
-            margin: 0;
-            padding: 8px;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
+            margin: 0; padding: 8px;
+            height: 100vh; overflow: hidden;
+            display: flex; justify-content: center;
         }
 
         .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 12px;
-            width: 100%;
-            max-width: 1500px;
-            height: 100%;
+            display: grid; grid-template-columns: 1fr 340px;
+            gap: 12px; width: 100%; max-width: 1500px; height: 100%;
         }
 
         .secao-notas {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(5, 1fr);
-            gap: 8px;
-            height: 100%;
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(5, 1fr); gap: 8px; height: 100%;
         }
 
         .card-valor {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            overflow: hidden;
+            background: #fff; border: 1px solid var(--border);
+            border-radius: 8px; display: flex; align-items: center; overflow: hidden;
         }
 
         .card-valor span {
-            background: #EDF2F7;
-            padding: 0 10px;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            font-weight: 800;
-            font-size: 13px;
-            min-width: 75px;
-            border-right: 1px solid var(--border);
+            background: #EDF2F7; padding: 0 10px; height: 100%;
+            display: flex; align-items: center; font-weight: 800;
+            font-size: 13px; min-width: 75px; border-right: 1px solid var(--border);
         }
 
         .card-valor input {
-            width: 100%;
-            border: none;
-            padding: 6px 12px;
-            font-size: 30px; 
-            font-weight: 800;
-            text-align: right;
-            outline: none;
+            width: 100%; border: none; padding: 6px 12px;
+            font-size: 30px; font-weight: 800; text-align: right; outline: none;
         }
 
         .reserva-destaque { border: 2px solid #F6AD55; background: #FFFAF0; }
@@ -102,6 +77,13 @@
         .dif-row { display: flex; align-items: baseline; gap: 8px; }
         .label-fluxo { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--destaque-azul); letter-spacing: 1px; }
 
+        /* Aviso de Sangria */
+        #aviso-sangria {
+            background: #FFF5F5; color: var(--perigo); border: 1px solid #FEB2B2;
+            padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 800;
+            text-align: center; margin-bottom: 10px; display: none;
+        }
+
         .btn-gravar { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--cor-primaria); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
         .btn-gravar:disabled { background: #4A5568; cursor: not-allowed; opacity: 0.6; }
 
@@ -109,27 +91,39 @@
         .dif-l { color: var(--alerta); }
         .dif-r { color: var(--perigo); }
 
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
-        .modal { background: white; padding: 30px; border-radius: 16px; width: 100%; max-width: 450px; text-align: center; position: relative; color: var(--cor-texto); }
-        .btn-close { position: absolute; top: 12px; right: 18px; font-size: 26px; font-weight: 400; color: #A0AEC0; cursor: pointer; }
-        .modal h3 { margin-top: 0; font-size: 22px; border-bottom: 2px solid #F1F5F9; padding-bottom: 12px; }
-        .modal-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #EDF2F7; }
-        .modal-row label { font-size: 13px; margin: 0; color: #718096; }
-        .modal-row span { font-weight: 800; font-size: 17px; }
+        /* Modais */
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; color: var(--cor-texto); }
+        .modal h3 { margin-top: 0; font-size: 20px; font-weight: 800; }
+        .modal-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #EDF2F7; }
+        .modal-row label { font-size: 12px; margin: 0; color: #718096; }
+        .modal-row span { font-weight: 800; font-size: 16px; }
+        .btn-modal { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 10px; }
+        .btn-cancelar { background: #EDF2F7; color: #4A5568; }
+        .btn-confirmar { background: #2D3748; color: #fff; }
     </style>
 </head>
 
 <body>
 
-<div id="overlay">
+<div id="modal-aviso" class="overlay">
     <div class="modal">
-        <span class="btn-close" title="Abortar" onclick="fecharModal()">&times;</span>
-        <h3>Resumo do Fechamento</h3>
+        <h3 id="aviso-titulo">Atenção</h3>
+        <p id="aviso-corpo" style="font-size: 14px; color: #4A5568; margin-bottom: 20px;"></p>
+        <button class="btn-modal btn-confirmar" onclick="fecharAviso()">OK</button>
+    </div>
+</div>
+
+<div id="modal-resumo" class="overlay">
+    <div class="modal">
+        <h3>Conferir Valores</h3>
         <div class="modal-row"><label>Saldo GIX:</label> <span id="m-gix"></span></div>
         <div class="modal-row"><label>Reserva:</label> <span id="m-res"></span></div>
         <div class="modal-row"><label>Contagem Final:</label> <span id="m-total"></span></div>
         <div class="modal-row" style="border:none"><label>Diferença:</label> <span id="m-dif"></span></div>
-        <button class="btn-gravar" id="btn-finalizar" style="margin-top: 25px; background: #2D3748;" onclick="executarEnvioReal()">GRAVAR E FINALIZAR</button>
+        
+        <button class="btn-modal btn-confirmar" id="btn-finalizar" onclick="executarEnvioReal()">GRAVAR E FINALIZAR</button>
+        <button class="btn-modal btn-cancelar" onclick="fecharResumo()">VOLTAR</button>
     </div>
 </div>
 
@@ -138,11 +132,11 @@
     <div class="sidebar">
         <div class="card-lateral">
             <div class="header-loja">
-                <img src="./logo.png" onerror="this.src='https://via.placeholder.com/140x30?text=Logo+Não+Encontrada'">
+                <img src="./logo.png" onerror="this.src='https://via.placeholder.com/140x30?text=Logo'">
                 <div id="loja-ui"><span id="txt-loja">LOJA --</span></div>
             </div>
             <label>Operador</label>
-            <input type="text" id="operador" class="input-sidebar" placeholder="Digite o nome...">
+            <input type="text" id="operador" class="input-sidebar" placeholder="Nome...">
             <label>Caixa</label>
             <div id="container-caixa"></div>
             <label>Saldo GIX (Sistema)</label>
@@ -155,18 +149,19 @@
                     <div class="dif-row"><span id="total-dif">R$ 0,00</span><span id="tag-fluxo" class="label-fluxo"></span></div>
                 </div>
             </div>
+            
+            <div id="aviso-sangria">⚠️ VALOR ACIMA DO RECOMENDADO.<br>REALIZE UMA TRANSFERÊNCIA/SANGRIA.</div>
+            
             <button class="btn-gravar" id="btn-submit" onclick="abrirResumo()">GRAVAR</button>
         </div>
     </div>
 </div>
 
 <script>
-// COLOQUE SUA URL DO GOOGLE ABAIXO
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyZp5lalN8hd-qZDzELqIe27qxOLePQ4NMBtTSBFZlOPrgzCq3QZ-2wjoU-Ms-_VHUW/exec";
-
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzhd7CS7JoF3QRuw9eLi7K3HFsxK9erwRdoD2fjyNwvXP1P7QMJXmh7t1jY-Hg-FCKO/exec";
 const valoresCédulas = [200, 100, 50, 20, 10, 5, 2, 1, 0.50, 0.25, 0.10, 0.05];
 const configsLojas = { "02": ["220", "230"], "05": ["510", "520"], "09": ["910"], "10": ["100"], "12": ["12"], "13": ["113"], "14": ["114"], "15": ["115"], "16": ["16"] };
-let dadosParaEnvio = null;
+let dadosGlobais = null;
 
 function montar() {
     const grid = document.getElementById('grade-notas');
@@ -180,20 +175,18 @@ function montar() {
 function inicializarLojas() {
     const params = new URLSearchParams(window.location.search);
     const lojaId = params.get('loja');
-    const lojaUI = document.getElementById('loja-ui');
-    if (lojaId && configsLojas[lojaId]) { renderizarInputsLoja(lojaId); } 
+    if (lojaId && configsLojas[lojaId]) renderizarInputsLoja(lojaId);
     else {
-        let select = `<select id="select-loja-manual" onchange="renderizarInputsLoja(this.value)"><option value="">Selecione a Loja</option>`;
-        Object.keys(configsLojas).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(k => select += `<option value="${k}">Loja ${k}</option>`);
-        lojaUI.innerHTML = select + `</select>`;
-        renderizarInputsLoja(""); 
+        let s = `<select id="select-loja-manual" onchange="renderizarInputsLoja(this.value)"><option value="">Selecione...</option>`;
+        Object.keys(configsLojas).forEach(k => s += `<option value="${k}">Loja ${k}</option>`);
+        document.getElementById('loja-ui').innerHTML = s + `</select>`;
+        renderizarInputsLoja("");
     }
 }
 
 function renderizarInputsLoja(id) {
     const container = document.getElementById('container-caixa');
-    const txt = document.getElementById('txt-loja');
-    if (txt) txt.innerText = id ? "LOJA " + id : "LOJA --";
+    document.getElementById('txt-loja').innerText = id ? "LOJA " + id : "LOJA --";
     if (id && configsLojas[id]) {
         const cxs = configsLojas[id];
         if (cxs.length === 1) container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" value="${cxs[0]}" readonly style="background:#f1f5f9;">`;
@@ -202,7 +195,7 @@ function renderizarInputsLoja(id) {
             cxs.forEach(c => s += `<option value="${c}">${c}</option>`);
             container.innerHTML = s + `</select>`;
         }
-    } else container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" placeholder="Aguardando loja...">`;
+    } else container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" placeholder="Selecione a loja...">`;
 }
 
 function aplicarMascara(el) {
@@ -229,53 +222,73 @@ function calcular() {
     const gix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
     const total = soma + res;
     const dif = total - gix;
+    
     document.getElementById('total-geral').innerText = fmt(total);
     const dText = document.getElementById('total-dif');
     const dTag = document.getElementById('tag-fluxo');
     dText.innerText = fmt(dif); dText.className = "";
+    
     if (dif === 0 || !document.getElementById('gix').value) dTag.innerText = "";
     else dTag.innerText = dif > 0 ? "Sobra" : "Falta";
+    
     const absD = Math.abs(dif);
     if (absD <= 5) dText.classList.add('dif-v'); else if (absD <= 10) dText.classList.add('dif-l'); else dText.classList.add('dif-r');
+
+    document.getElementById('aviso-sangria').style.display = (total > 1200) ? 'block' : 'none';
 }
 
 function fmt(v) { return v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }); }
+
+function mostrarAviso(t, m) {
+    document.getElementById('aviso-titulo').innerText = t;
+    document.getElementById('aviso-corpo').innerText = m;
+    document.getElementById('modal-aviso').style.display = 'flex';
+}
+function fecharAviso() { document.getElementById('modal-aviso').style.display = 'none'; }
 
 function abrirResumo() {
     const op = document.getElementById('operador').value;
     const cx = document.getElementById('caixa').value;
     const lojaSelect = document.getElementById('select-loja-manual');
     const lojaId = lojaSelect ? lojaSelect.value : new URLSearchParams(window.location.search).get('loja');
-    if (!op || !cx || !lojaId) { alert("⚠️ Informe Loja, Operador e Caixa!"); return; }
+
+    if (!op || !cx || !lojaId) { 
+        mostrarAviso("Dados Incompletos", "Preencha a Loja, o Operador e o Caixa antes de gravar."); 
+        return; 
+    }
 
     const vGix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
     const vRes = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
     const vTotal = parseFloat(document.getElementById('total-geral').innerText.replace(/[R$\s.]/g, "").replace(",", "."));
     const vDif = parseFloat(document.getElementById('total-dif').innerText.replace(/[R$\s.]/g, "").replace(",", "."));
 
-    dadosParaEnvio = { loja: lojaId, operador: op, caixa: cx, saldoGix: vGix, reserva: vRes, totalContado: vTotal, diferenca: vDif, status: vDif === 0 ? "OK" : document.getElementById('tag-fluxo').innerText };
+    dadosGlobais = { loja: lojaId, operador: op, caixa: cx, saldoGix: vGix, reserva: vRes, totalContado: vTotal, diferenca: vDif, status: vDif === 0 ? "OK" : document.getElementById('tag-fluxo').innerText };
 
     document.getElementById('m-gix').innerText = fmt(vGix);
     document.getElementById('m-res').innerText = fmt(vRes);
     document.getElementById('m-total').innerText = fmt(vTotal);
     document.getElementById('m-dif').innerText = fmt(vDif);
     document.getElementById('m-dif').className = document.getElementById('total-dif').className;
-    document.getElementById('overlay').style.display = 'flex';
+    document.getElementById('modal-resumo').style.display = 'flex';
 }
+
+function fecharResumo() { document.getElementById('modal-resumo').style.display = 'none'; }
 
 async function executarEnvioReal() {
     const btn = document.getElementById('btn-finalizar');
     btn.disabled = true; btn.innerText = "GRAVANDO...";
+    
     try {
-        await fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dadosParaEnvio) });
-        alert("✅ Dados enviados com sucesso!");
-        location.reload();
+        await fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dadosGlobais) });
+        btn.innerText = "ENVIADO COM SUCESSO!";
+        btn.style.background = "var(--ok)";
+        setTimeout(() => location.reload(), 1500);
     } catch (e) {
-        alert("❌ Erro ao enviar!"); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE";
+        mostrarAviso("Erro", "Falha ao enviar. Tente novamente.");
+        btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE";
     }
 }
 
-function fecharModal() { document.getElementById('overlay').style.display = 'none'; }
 montar();
 </script>
 </body>
