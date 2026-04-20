@@ -10,15 +10,19 @@
         :root {
             --cor-primaria: #D32F2F; --cor-texto: #1A202C; --cor-fundo: #F8FAFC;
             --border: #CBD5E1; --ok: #38A169; --alerta: #D69E2E; --perigo: #E53E3E;
-            --destaque-azul: #63B3ED;
+            --destaque-azul: #3182CE;
         }
         * { box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background-color: var(--cor-fundo); color: var(--cor-texto); margin: 0; padding: 8px; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
         .dashboard { display: grid; grid-template-columns: 1fr 340px; gap: 12px; width: 100%; max-width: 1500px; height: 100%; }
         .secao-notas { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); gap: 8px; height: 100%; }
-        .card-valor { background: #fff; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; overflow: hidden; }
+        .card-valor { background: #fff; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; overflow: hidden; transition: all 0.2s; }
+        
+        /* Efeito de Foco Sugerido */
+        .card-valor:focus-within { border-color: var(--destaque-azul); box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2); background: #EBF8FF; }
+        
         .card-valor span { background: #EDF2F7; padding: 0 10px; height: 100%; display: flex; align-items: center; font-weight: 800; font-size: 13px; min-width: 75px; border-right: 1px solid var(--border); }
-        .card-valor input { width: 100%; border: none; padding: 6px 12px; font-size: 30px; font-weight: 800; text-align: right; outline: none; }
+        .card-valor input { width: 100%; border: none; padding: 6px 12px; font-size: 30px; font-weight: 800; text-align: right; outline: none; background: transparent; }
         .reserva-destaque { border: 2px solid #F6AD55; background: #FFFAF0; }
         .reserva-destaque span { background: #F6AD55; color: #fff; }
         .invalid { border: 2px solid var(--perigo) !important; background: #FFF5F5 !important; }
@@ -28,7 +32,8 @@
         .header-loja img { height: 30px; }
         .header-loja #txt-loja { font-weight: 800; color: var(--cor-primaria); font-size: 16px; white-space: nowrap; }
         label { display: block; font-size: 10px; font-weight: 700; color: #64748B; margin-bottom: 3px; }
-        .input-sidebar { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-weight: 600; margin-bottom: 10px; font-size: 14px; }
+        .input-sidebar { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-weight: 600; margin-bottom: 10px; font-size: 14px; outline: none; }
+        .input-sidebar:focus { border-color: var(--destaque-azul); background: #EBF8FF; }
         #gix { height: 48px; font-size: 26px; font-weight: 800; text-align: right; color: var(--cor-primaria); background: #FFF5F5; border-color: #FED7D7; }
         .resultados { background: #1A202C; color: #fff; border-radius: 10px; padding: 14px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
         #total-geral { font-size: 34px; font-weight: 900; display: block; }
@@ -76,9 +81,9 @@
     <div class="sidebar">
         <div class="card-lateral">
             <div class="header-loja"><img src="./logo.png" onerror="this.src='https://via.placeholder.com/140x30?text=Logo'"><div id="loja-ui"><span id="txt-loja">LOJA --</span></div></div>
-            <label>Operador</label><input type="text" id="operador" class="input-sidebar" placeholder="Nome...">
+            <label>Operador</label><input type="text" id="operador" class="input-sidebar nav-field" placeholder="Nome...">
             <label>Caixa</label><div id="container-caixa"></div>
-            <label>Saldo GIX (Sistema)</label><input type="text" id="gix" class="input-sidebar" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0,00">
+            <label>Saldo GIX (Sistema)</label><input type="text" id="gix" class="input-sidebar nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0,00">
         </div>
         <div class="resultados">
             <div><div class="resumo-info"><label>Total no Caixa</label><span id="total-geral">R$ 0,00</span></div>
@@ -98,9 +103,10 @@ let dadosEnvio = null;
 
 function montar() {
     const grid = document.getElementById('grade-notas');
-    valoresCédulas.forEach(v => { grid.innerHTML += `<div class="card-valor"><span>R$ ${v.toFixed(2)}</span><input type="text" class="v-input" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0"></div>`; });
-    grid.innerHTML += `<div class="card-valor reserva-destaque" style="grid-column: span 2;"><span>RESERVA</span><input type="text" id="reserva" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0"></div>`;
+    valoresCédulas.forEach(v => { grid.innerHTML += `<div class="card-valor"><span>R$ ${v.toFixed(2)}</span><input type="text" class="v-input nav-field" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0"></div>`; });
+    grid.innerHTML += `<div class="card-valor reserva-destaque" style="grid-column: span 2;"><span>RESERVA</span><input type="text" id="reserva" class="nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0"></div>`;
     inicializarLojas();
+    configurarNavegacao();
 }
 
 function inicializarLojas() {
@@ -108,7 +114,7 @@ function inicializarLojas() {
     const lojaId = params.get('loja');
     if (lojaId && configsLojas[lojaId]) renderizarInputsLoja(lojaId);
     else {
-        let s = `<select id="select-loja-manual" onchange="renderizarInputsLoja(this.value)"><option value="">Loja...</option>`;
+        let s = `<select id="select-loja-manual" class="input-sidebar" onchange="renderizarInputsLoja(this.value)"><option value="">Loja...</option>`;
         Object.keys(configsLojas).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(k => s += `<option value="${k}">Loja ${k}</option>`);
         document.getElementById('loja-ui').innerHTML = s + `</select>`;
         renderizarInputsLoja("");
@@ -169,7 +175,6 @@ function fecharAviso() { document.getElementById('modal-aviso').style.display = 
 function abrirResumo() {
     const op = document.getElementById('operador').value; const cx = document.getElementById('caixa').value;
     const lojaId = document.getElementById('select-loja-manual')?.value || new URLSearchParams(window.location.search).get('loja');
-    
     if (!op || !cx || !lojaId) { mostrarAviso("Atenção", "Preencha Loja, Operador e Caixa."); return; }
     if (document.querySelectorAll('.invalid').length > 0) { mostrarAviso("Erro de Valor", "Existem campos destacados em vermelho. O valor digitado deve ser múltiplo da nota correspondente."); return; }
 
@@ -200,6 +205,31 @@ async function executarEnvioReal() {
         setTimeout(() => location.reload(), 1500);
     } catch (e) { mostrarAviso("Erro", "Falha no envio."); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
 }
+
+// LOGICA DE NAVEGAÇÃO POR SETAS E ENTER
+function configurarNavegacao() {
+    setTimeout(() => {
+        const fields = Array.from(document.querySelectorAll('.nav-field'));
+        fields.forEach((field, index) => {
+            field.addEventListener('keydown', (e) => {
+                const isNext = (e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'ArrowRight');
+                const isPrev = (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || (e.key === 'Enter' && e.shiftKey));
+
+                if (isNext) {
+                    e.preventDefault();
+                    const next = fields[index + 1];
+                    if (next) next.focus();
+                    else if (e.key === 'Enter') abrirResumo(); // Grava no ultimo Enter
+                } else if (isPrev) {
+                    e.preventDefault();
+                    const prev = fields[index - 1];
+                    if (prev) prev.focus();
+                }
+            });
+        });
+    }, 500);
+}
+
 montar();
 </script>
 </body>
