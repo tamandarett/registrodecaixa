@@ -17,14 +17,8 @@
         body { font-family: 'Inter', sans-serif; background-color: var(--cor-fundo); color: var(--cor-texto); margin: 0; padding: 8px; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
         .dashboard { display: grid; grid-template-columns: 1fr 340px; gap: 12px; width: 100%; max-width: 1500px; height: 100%; }
         
-        /* Grade original de 5 linhas para não espremer */
-        .secao-notas { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            grid-template-rows: repeat(5, 1fr); 
-            gap: 8px; 
-            height: 100%; 
-        }
+        /* Grade Fixa de 5 Linhas */
+        .secao-notas { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); gap: 8px; height: 100%; }
 
         .card-valor { background: #fff; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; overflow: hidden; transition: all 0.2s; }
         .card-valor:focus-within { border-color: var(--destaque-azul); box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2); background: #EBF8FF; }
@@ -34,13 +28,11 @@
         .reserva-destaque { border: 2px solid #F6AD55; background: #FFFAF0; }
         .reserva-destaque span { background: #F6AD55; color: #fff; }
         
-        /* Histórico ocupando apenas os 2 espaços restantes da linha 5 */
         .card-historico { grid-column: span 2; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; overflow: hidden; }
         .card-historico h4 { margin: 0 0 5px 0; font-size: 10px; text-transform: uppercase; color: #64748B; border-bottom: 1px solid #EDF2F7; }
         .tabela-hist { width: 100%; border-collapse: collapse; font-size: 9px; table-layout: fixed; }
         .tabela-hist th { text-align: left; color: #94A3B8; padding-bottom: 2px; }
         .tabela-hist td { padding: 3px 0; border-bottom: 1px solid #F8FAFC; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .hist-v { color: var(--ok); } .hist-l { color: var(--alerta); } .hist-r { color: var(--perigo); }
 
         .invalid { border: 2px solid var(--perigo) !important; background: #FFF5F5 !important; }
         .sidebar { display: flex; flex-direction: column; gap: 10px; }
@@ -52,11 +44,17 @@
         .input-sidebar { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-weight: 600; margin-bottom: 10px; font-size: 14px; outline: none; }
         .input-sidebar:focus { border-color: var(--destaque-azul); background: #EBF8FF; }
         #gix { height: 48px; font-size: 26px; font-weight: 800; text-align: right; color: var(--cor-primaria); background: #FFF5F5; border-color: #FED7D7; }
+        
         .resultados { background: #1A202C; color: #fff; border-radius: 10px; padding: 14px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
         #total-geral { font-size: 34px; font-weight: 900; display: block; }
         #total-dif { font-size: 26px; font-weight: 800; }
-        .btn-gravar { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--cor-primaria); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
         
+        /* Esquema de Cores Unificado */
+        .dif-v { color: var(--ok) !important; } 
+        .dif-l { color: var(--alerta) !important; } 
+        .dif-r { color: var(--perigo) !important; }
+
+        .btn-gravar { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--cor-primaria); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
         .modal { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; color: var(--cor-texto); }
         .modal-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #EDF2F7; }
@@ -65,8 +63,8 @@
         .btn-modal { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 10px; }
         .btn-confirmar { background: #2D3748; color: #fff; }
         .btn-cancelar { background: #EDF2F7; color: #4A5568; }
-        .sangria-alerta { color: var(--perigo); font-size: 11px; font-weight: 700; margin: 10px 0; display: none; }
-        .sangria-sidebar { background: white; color: var(--perigo); padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 700; text-align: center; margin-bottom: 10px; display: none; }
+        .sangria-alerta { color: var(--perigo); font-size: 11px; font-weight: 700; margin: 10px 0; display: none; text-align: center; }
+        .sangria-sidebar { background: white; color: var(--perigo); padding: 10px; border-radius: 8px; font-size: 10px; font-weight: 800; text-align: center; margin-bottom: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -96,10 +94,10 @@
             <label>Saldo GIX (Sistema)</label><input type="text" id="gix" class="input-sidebar nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0,00" autocomplete="off">
         </div>
         <div class="resultados">
-            <div><div class="resumo-info"><label>Total no Caixa</label><span id="total-geral">R$ 0,00</span></div>
-                <div class="resumo-info"><label>Diferença</label><div class="dif-row"><span id="total-dif">R$ 0,00</span></div></div>
+            <div><div class="resumo-info"><label style="color:#94A3B8">Total no Caixa</label><span id="total-geral">R$ 0,00</span></div>
+                <div class="resumo-info"><label style="color:#94A3B8">Diferença</label><div class="dif-row"><span id="total-dif">R$ 0,00</span></div></div>
             </div>
-            <div id="sidebar-sangria-msg" class="sangria-sidebar">⚠️ Valor acima do recomendado. Considere fazer uma transferência.</div>
+            <div id="sidebar-sangria-msg" class="sangria-sidebar">⚠️ VALOR ACIMA DO RECOMENDADO.<br>CONSIDERE FAZER UMA TRANSFERÊNCIA.</div>
             <button class="btn-gravar" id="btn-submit" onclick="abrirResumo()">GRAVAR</button>
         </div>
     </div>
@@ -114,11 +112,8 @@ let dadosEnvio = null;
 function montar() {
     const grid = document.getElementById('grade-notas');
     valoresCédulas.forEach(v => { grid.innerHTML += `<div class="card-valor"><span>R$ ${v.toFixed(2)}</span><input type="text" class="v-input nav-field" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0" autocomplete="off"></div>`; });
-    
-    // Linha 5: Reserva (1 col) + Histórico (2 cols)
     grid.innerHTML += `<div class="card-valor reserva-destaque"><span>RESERVA</span><input type="text" id="reserva" class="nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0" autocomplete="off"></div>`;
-    grid.innerHTML += `<div class="card-historico"><h4>Últimas Contagens (Cache)</h4><table class="tabela-hist"><thead><tr><th>HORA</th><th>OP.</th><th>CX.</th><th>TOTAL</th><th>DIF.</th></tr></thead><tbody id="corpo-hist"></tbody></table></div>`;
-
+    grid.innerHTML += `<div class="card-historico"><h4>Últimas Contagens (Cache)</h4><table class="tabela-hist"><thead><tr><th>DATA/HORA</th><th>OP.</th><th>CX.</th><th>TOTAL</th><th>DIF.</th></tr></thead><tbody id="corpo-hist"></tbody></table></div>`;
     inicializarLojas();
     configurarNavegacao();
     renderizarHistorico();
@@ -161,12 +156,12 @@ function fmt(v) { return v.toLocaleString('pt-br', { style: 'currency', currency
 function salvarNoCache(dados) {
     let hist = JSON.parse(localStorage.getItem('tt_hist') || "[]");
     const novoItem = {
-        data: new Date().toLocaleTimeString('pt-br', {hour:'2-digit', minute:'2-digit'}),
+        data: new Date().toLocaleString('pt-br', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'}),
         op: dados.operador.split(' ')[0],
         cx: dados.caixa,
         total: fmt(dados.totalContado),
         dif: (dados.diferenca > 0 ? "+" : (dados.diferenca < 0 ? "-" : "")) + fmt(Math.abs(dados.diferenca)),
-        cor: Math.abs(dados.diferenca) <= 5 ? 'hist-v' : (Math.abs(dados.diferenca) <= 15 ? 'hist-l' : 'hist-r')
+        cor: Math.abs(dados.diferenca) <= 5 ? 'dif-v' : (Math.abs(dados.diferenca) <= 15 ? 'dif-l' : 'dif-r')
     };
     hist.unshift(novoItem);
     if (hist.length > 3) hist.pop();
@@ -184,14 +179,11 @@ function abrirResumo() {
     const lojaId = document.getElementById('select-loja-manual')?.value || new URLSearchParams(window.location.search).get('loja');
     if (!op || !cx || !lojaId) { mostrarAviso("Atenção", "Preencha Loja, Operador e Caixa."); return; }
     if (document.querySelectorAll('.invalid').length > 0) { mostrarAviso("Erro", "Valores múltiplos incorretos."); return; }
-    
     const vGix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
     const vRes = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
     const vTotal = parseFloat(document.getElementById('total-geral').innerText.replace(/[R$\s.]/g, "").replace(",", "."));
     const vDif = vTotal - vGix;
-
     dadosEnvio = { loja: lojaId, operador: op, caixa: cx, saldoGix: vGix, reserva: vRes, totalContado: vTotal, diferenca: vDif, status: (vDif === 0 ? "OK" : (vDif > 0 ? "SOBRA" : "FALTA")) };
-    
     document.getElementById('m-gix').innerText = fmt(vGix); document.getElementById('m-res').innerText = fmt(vRes);
     document.getElementById('m-total').innerText = fmt(vTotal); 
     const mDif = document.getElementById('m-dif');
