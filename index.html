@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="robots" content="noindex, nofollow">
+    
     <title>Calculadora de Caixa - Tamandaré Tintas</title>
     <link rel="icon" type="image/png" href="./favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -18,7 +20,6 @@
         .secao-notas { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); gap: 8px; height: 100%; }
         .card-valor { background: #fff; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; overflow: hidden; transition: all 0.2s; }
         
-        /* Efeito de Foco Sugerido */
         .card-valor:focus-within { border-color: var(--destaque-azul); box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2); background: #EBF8FF; }
         
         .card-valor span { background: #EDF2F7; padding: 0 10px; height: 100%; display: flex; align-items: center; font-weight: 800; font-size: 13px; min-width: 75px; border-right: 1px solid var(--border); }
@@ -70,7 +71,9 @@
         <div class="modal-row"><label>Reserva:</label> <span id="m-res"></span></div>
         <div class="modal-row"><label>Contagem Final:</label> <span id="m-total"></span></div>
         <div class="modal-row" style="border:none"><label>Diferença:</label> <span id="m-dif"></span></div>
+        
         <div id="modal-sangria-msg" class="sangria-modal">⚠️ Valor acima do recomendado. Considere fazer uma transferência.</div>
+        
         <button class="btn-modal btn-confirmar" id="btn-envio" onclick="executarEnvioReal()">GRAVAR E FINALIZAR</button>
         <button class="btn-modal btn-cancelar" onclick="fecharResumo()">VOLTAR</button>
     </div>
@@ -83,7 +86,7 @@
             <div class="header-loja"><img src="./logo.png" onerror="this.src='https://via.placeholder.com/140x30?text=Logo'"><div id="loja-ui"><span id="txt-loja">LOJA --</span></div></div>
             <label>Operador</label><input type="text" id="operador" class="input-sidebar nav-field" placeholder="Nome...">
             <label>Caixa</label><div id="container-caixa"></div>
-            <label>Saldo GIX (Sistema)</label><input type="text" id="gix" class="input-sidebar nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0,00">
+            <label>Saldo GIX (Sistema)</label><input type="text" id="gix" class="input-sidebar nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0,00" autocomplete="off">
         </div>
         <div class="resultados">
             <div><div class="resumo-info"><label>Total no Caixa</label><span id="total-geral">R$ 0,00</span></div>
@@ -103,8 +106,12 @@ let dadosEnvio = null;
 
 function montar() {
     const grid = document.getElementById('grade-notas');
-    valoresCédulas.forEach(v => { grid.innerHTML += `<div class="card-valor"><span>R$ ${v.toFixed(2)}</span><input type="text" class="v-input nav-field" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0"></div>`; });
-    grid.innerHTML += `<div class="card-valor reserva-destaque" style="grid-column: span 2;"><span>RESERVA</span><input type="text" id="reserva" class="nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0"></div>`;
+    valoresCédulas.forEach(v => { 
+        // autocomplete="off" adicionado nos campos de notas
+        grid.innerHTML += `<div class="card-valor"><span>R$ ${v.toFixed(2)}</span><input type="text" class="v-input nav-field" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0" autocomplete="off"></div>`; 
+    });
+    // autocomplete="off" adicionado na reserva
+    grid.innerHTML += `<div class="card-valor reserva-destaque" style="grid-column: span 2;"><span>RESERVA</span><input type="text" id="reserva" class="nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0" autocomplete="off"></div>`;
     inicializarLojas();
     configurarNavegacao();
 }
@@ -157,13 +164,18 @@ function calcular() {
     const res = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
     const gix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
     const total = soma + res; const dif = total - gix;
+    
     document.getElementById('total-geral').innerText = fmt(total);
     const dText = document.getElementById('total-dif');
     const sinal = dif > 0 ? "+ " : (dif < 0 ? "- " : "");
     dText.innerText = sinal + fmt(Math.abs(dif));
     dText.className = "";
+    
     const absD = Math.abs(dif);
-    if (absD <= 5) dText.classList.add('dif-v'); else if (absD <= 15) dText.classList.add('dif-l'); else dText.classList.add('dif-r');
+    if (absD <= 5) dText.classList.add('dif-v'); 
+    else if (absD <= 15) dText.classList.add('dif-l'); 
+    else dText.classList.add('dif-r');
+
     document.getElementById('sidebar-sangria-msg').style.display = (total > 1200) ? 'block' : 'none';
 }
 
@@ -175,6 +187,7 @@ function fecharAviso() { document.getElementById('modal-aviso').style.display = 
 function abrirResumo() {
     const op = document.getElementById('operador').value; const cx = document.getElementById('caixa').value;
     const lojaId = document.getElementById('select-loja-manual')?.value || new URLSearchParams(window.location.search).get('loja');
+    
     if (!op || !cx || !lojaId) { mostrarAviso("Atenção", "Preencha Loja, Operador e Caixa."); return; }
     if (document.querySelectorAll('.invalid').length > 0) { mostrarAviso("Erro de Valor", "Existem campos destacados em vermelho. O valor digitado deve ser múltiplo da nota correspondente."); return; }
 
@@ -191,6 +204,7 @@ function abrirResumo() {
     const mDif = document.getElementById('m-dif');
     mDif.innerText = (realDif > 0 ? "+ " : (realDif < 0 ? "- " : "")) + fmt(Math.abs(realDif));
     mDif.className = document.getElementById('total-dif').className;
+
     document.getElementById('modal-sangria-msg').style.display = (vTotal > 1200) ? 'block' : 'none';
     document.getElementById('modal-resumo').style.display = 'flex';
 }
@@ -206,7 +220,6 @@ async function executarEnvioReal() {
     } catch (e) { mostrarAviso("Erro", "Falha no envio."); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
 }
 
-// LOGICA DE NAVEGAÇÃO POR SETAS E ENTER
 function configurarNavegacao() {
     setTimeout(() => {
         const fields = Array.from(document.querySelectorAll('.nav-field'));
@@ -219,7 +232,7 @@ function configurarNavegacao() {
                     e.preventDefault();
                     const next = fields[index + 1];
                     if (next) next.focus();
-                    else if (e.key === 'Enter') abrirResumo(); // Grava no ultimo Enter
+                    else if (e.key === 'Enter') abrirResumo();
                 } else if (isPrev) {
                     e.preventDefault();
                     const prev = fields[index - 1];
