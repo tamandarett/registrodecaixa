@@ -48,7 +48,7 @@
         .dif-l { color: var(--alerta) !important; }
         .dif-r { color: var(--perigo) !important; }
 
-        .sangria-modal { color: var(--perigo); font-size: 11px; font-weight: 700; margin: 15px 0 5px 0; display: none; }
+        .sangria-alerta { color: var(--perigo); font-size: 11px; font-weight: 700; margin: 10px 0; display: none; text-align: center; line-height: 1.3; }
     </style>
 </head>
 <body>
@@ -63,7 +63,7 @@
         <div class="modal-row"><label>Contagem Final:</label> <span id="m-total"></span></div>
         <div class="modal-row" style="border:none"><label>Diferença:</label> <span id="m-dif"></span></div>
         
-        <div id="modal-sangria-msg" class="sangria-modal">⚠️ Valor acima do recomendado. Considere fazer uma transferência.</div>
+        <div id="modal-sangria-msg" class="sangria-alerta">⚠️ Valor acima do recomendado. Considere fazer uma transferência.</div>
         
         <button class="btn-modal btn-confirmar" id="btn-envio" onclick="executarEnvioReal()">GRAVAR E FINALIZAR</button>
         <button class="btn-modal btn-cancelar" onclick="fecharResumo()">VOLTAR</button>
@@ -83,6 +83,9 @@
             <div><div class="resumo-info"><label>Total no Caixa</label><span id="total-geral">R$ 0,00</span></div>
                 <div class="resumo-info"><label>Diferença</label><div class="dif-row"><span id="total-dif">R$ 0,00</span></div></div>
             </div>
+            
+            <div id="sidebar-sangria-msg" class="sangria-alerta">⚠️ Valor acima do recomendado. Considere fazer uma transferência.</div>
+            
             <button class="btn-gravar" onclick="abrirResumo()">GRAVAR</button>
         </div>
     </div>
@@ -147,16 +150,17 @@ function calcular() {
     document.getElementById('total-geral').innerText = fmt(total);
     const dText = document.getElementById('total-dif');
     
-    // Sinal de + ou - e remoção do texto sobra/falta
     const sinal = dif > 0 ? "+ " : (dif < 0 ? "- " : "");
     dText.innerText = sinal + fmt(Math.abs(dif));
     dText.className = "";
     
     const absD = Math.abs(dif);
-    // Novas faixas de cores
     if (absD <= 5) dText.classList.add('dif-v'); 
     else if (absD <= 15) dText.classList.add('dif-l'); 
     else dText.classList.add('dif-r');
+
+    // Monitor do aviso de sangria na sidebar
+    document.getElementById('sidebar-sangria-msg').style.display = (total > 1200) ? 'block' : 'none';
 }
 
 function fmt(v) { return v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }); }
