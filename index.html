@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Calculadora de Caixa - Tamandaré Tintas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cor-primaria: #D32F2F; 
+            --cor-texto: #1A202C;
+            --cor-fundo: #F8FAFC;
+            --border: #CBD5E1;
+            --ok: #38A169;
+            --alerta: #D69E2E;
+            --perigo: #E53E3E;
+            --destaque-azul: #63B3ED;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 8px;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 12px;
+            width: 100%;
+            max-width: 1500px;
+            height: 100%;
+        }
+
+        .secao-notas {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 8px;
+            height: 100%;
+        }
+
+        .card-valor {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .card-valor span {
+            background: #EDF2F7;
+            padding: 0 10px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            font-weight: 800;
+            font-size: 13px;
+            min-width: 75px;
+            border-right: 1px solid var(--border);
+        }
+
+        .card-valor input {
+            width: 100%;
+            border: none;
+            padding: 6px 12px;
+            font-size: 30px; 
+            font-weight: 800;
+            text-align: right;
+            outline: none;
+        }
+
+        .reserva-destaque { border: 2px solid #F6AD55; background: #FFFAF0; }
+        .reserva-destaque span { background: #F6AD55; color: #fff; }
+
+        .invalid { border: 2px solid var(--perigo) !important; background: #FFF5F5 !important; }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card-lateral {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .header-loja {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--cor-fundo);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+
+        .header-loja img { height: 30px; }
+        .header-loja #txt-loja { font-weight: 800; color: var(--cor-primaria); font-size: 16px; white-space: nowrap; }
+
+        #select-loja-manual {
+            font-size: 12px;
+            padding: 4px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            font-weight: 600;
+        }
+
+        label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            color: #64748B;
+            margin-bottom: 3px;
+        }
+
+        .input-sidebar {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        #gix {
+            height: 48px;
+            font-size: 26px;
+            font-weight: 800;
+            text-align: right;
+            color: var(--cor-primaria);
+            background: #FFF5F5;
+            border-color: #FED7D7;
+        }
+
+        .resultados {
+            background: #1A202C;
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .resumo-info { margin-bottom: 12px; }
+
+        #total-geral { 
+            font-size: 34px; 
+            font-weight: 900; 
+            display: block; 
+        }
+
+        #total-dif { 
+            font-size: 26px; 
+            font-weight: 800; 
+        }
+
+        .dif-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .label-fluxo {
+            font-size: 11px; 
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--destaque-azul); 
+            letter-spacing: 1px;
+        }
+
+        .btn-gravar {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: var(--cor-primaria);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .btn-gravar:disabled { background: #4A5568; cursor: not-allowed; opacity: 0.6; }
+
+        .dif-v { color: var(--ok); }
+        .dif-l { color: var(--alerta); }
+        .dif-r { color: var(--perigo); }
+
+        /* Modal */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+        }
+
+        .btn-close {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            font-size: 26px;
+            font-weight: 400;
+            color: #A0AEC0;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal h3 { margin-top: 0; color: #1A202C; font-size: 22px; border-bottom: 2px solid #F1F5F9; padding-bottom: 12px; }
+        .modal-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #EDF2F7; }
+        .modal-row label { font-size: 13px; margin: 0; color: #718096; }
+        .modal-row span { font-weight: 800; font-size: 17px; color: #1A202C; }
+    </style>
+</head>
+
+<body>
+
+<div id="overlay">
+    <div class="modal">
+        <span class="btn-close" title="Abortar" onclick="fecharModal()">&times;</span>
+        <h3>Resumo do Fechamento</h3>
+        <div class="modal-row"><label>Saldo GIX (Sistema):</label> <span id="m-gix"></span></div>
+        <div class="modal-row"><label>Contagem Final:</label> <span id="m-total"></span></div>
+        <div class="modal-row" style="border:none"><label>Diferença:</label> <span id="m-dif"></span></div>
+        <button class="btn-gravar" style="margin-top: 25px; background: #2D3748;" onclick="location.reload()">GRAVAR E FINALIZAR</button>
+    </div>
+</div>
+
+<div class="dashboard">
+    <div class="secao-notas" id="grade-notas"></div>
+
+    <div class="sidebar">
+        <div class="card-lateral">
+            <div class="header-loja">
+                <img src="logo.png" onerror="this.src='https://via.placeholder.com/140x30?text=Tamandare'">
+                <div id="loja-ui">
+                    <span id="txt-loja">LOJA --</span>
+                </div>
+            </div>
+
+            <label>Operador</label>
+            <input type="text" id="operador" class="input-sidebar" placeholder="Digite o nome...">
+
+            <label>Caixa</label>
+            <div id="container-caixa"></div>
+
+            <label>Saldo GIX (Sistema)</label>
+            <input type="text" id="gix" class="input-sidebar" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0,00">
+        </div>
+
+        <div class="resultados">
+            <div>
+                <div class="resumo-info">
+                    <label>Total no Caixa (Cédulas + Reserva)</label>
+                    <span id="total-geral">R$ 0,00</span>
+                </div>
+
+                <div class="resumo-info">
+                    <label>Diferença vs Sistema</label>
+                    <div class="dif-row">
+                        <span id="total-dif">R$ 0,00</span>
+                        <span id="tag-fluxo" class="label-fluxo"></span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-gravar" id="btn-submit" onclick="enviar()">GRAVAR</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const valoresCédulas = [200, 100, 50, 20, 10, 5, 2, 1, 0.50, 0.25, 0.10, 0.05];
+const configsLojas = {
+    "02": ["220", "230"], 
+    "05": ["510", "520"], 
+    "09": ["910"], 
+    "10": ["100"],
+    "12": ["12"], 
+    "13": ["113"], 
+    "14": ["114"], 
+    "15": ["115"], 
+    "16": ["16"]
+};
+
+function montar() {
+    const grid = document.getElementById('grade-notas');
+    valoresCédulas.forEach(v => {
+        grid.innerHTML += `
+        <div class="card-valor">
+            <span>R$ ${v.toFixed(2)}</span>
+            <input type="text" class="v-input" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0">
+        </div>`;
+    });
+
+    grid.innerHTML += `
+    <div class="card-valor reserva-destaque" style="grid-column: span 2;">
+        <span>RESERVA</span>
+        <input type="text" id="reserva" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0">
+    </div>`;
+
+    inicializarLojas();
+    iniciarNavegacao();
+}
+
+function inicializarLojas() {
+    const params = new URLSearchParams(window.location.search);
+    const lojaId = params.get('loja');
+    const lojaUI = document.getElementById('loja-ui');
+
+    if (lojaId && configsLojas[lojaId]) {
+        renderizarInputsLoja(lojaId);
+    } else {
+        let selectLoja = `<select id="select-loja-manual" onchange="renderizarInputsLoja(this.value)">
+                            <option value="">Selecione a Loja</option>`;
+        const chavesOrdenadas = Object.keys(configsLojas).sort((a, b) => parseInt(a) - parseInt(b));
+        chavesOrdenadas.forEach(key => {
+            selectLoja += `<option value="${key}">Loja ${key}</option>`;
+        });
+        selectLoja += `</select>`;
+        lojaUI.innerHTML = selectLoja;
+        renderizarInputsLoja(""); 
+    }
+}
+
+function renderizarInputsLoja(lojaId) {
+    const containerCaixa = document.getElementById('container-caixa');
+    const txtLoja = document.getElementById('txt-loja');
+
+    if (txtLoja) txtLoja.innerText = lojaId ? "LOJA " + lojaId : "LOJA --";
+
+    if (lojaId && configsLojas[lojaId]) {
+        const caixasDisponiveis = configsLojas[lojaId];
+        if (caixasDisponiveis.length === 1) {
+            containerCaixa.innerHTML = `<input type="text" id="caixa" class="input-sidebar" value="${caixasDisponiveis[0]}" readonly style="background:#f1f5f9; cursor:not-allowed">`;
+        } else {
+            let selectHtml = `<select id="caixa" class="input-sidebar"><option value="">Selecione o caixa</option>`;
+            caixasDisponiveis.forEach(c => selectHtml += `<option value="${c}">${c}</option>`);
+            selectHtml += `</select>`;
+            containerCaixa.innerHTML = selectHtml;
+        }
+    } else {
+        containerCaixa.innerHTML = `<input type="text" id="caixa" class="input-sidebar" placeholder="Digite o nº do caixa...">`;
+    }
+}
+
+function aplicarMascara(el) {
+    let valorOriginal = el.value.replace(/[^\d,]/g, "");
+    el.value = valorOriginal;
+    let valorNumerico = parseFloat(valorOriginal.replace(",", "."));
+    el.dataset.valorNumerico = valorNumerico || 0;
+    validarMultiplo(el);
+}
+
+function formatarAoSair(el) {
+    let valor = parseFloat(el.dataset.valorNumerico) || 0;
+    if (valor > 0) {
+        el.value = valor.toLocaleString('pt-br', { minimumFractionDigits: 2 });
+    } else {
+        el.value = "";
+    }
+}
+
+function iniciarNavegacao() {
+    setTimeout(() => {
+        const campos = [...document.querySelectorAll('.v-input'), document.getElementById('reserva'), document.getElementById('gix')].filter(Boolean);
+        campos.forEach((el, i) => {
+            el.addEventListener('keydown', e => {
+                if (e.key === 'Enter') { e.preventDefault(); (e.shiftKey ? campos[i - 1] : campos[i + 1])?.focus(); }
+                if (e.key === 'ArrowDown') { e.preventDefault(); campos[i + 1]?.focus(); }
+                if (e.key === 'ArrowUp') { e.preventDefault(); campos[i - 1]?.focus(); }
+            });
+        });
+    }, 100);
+}
+
+function validarMultiplo(el) {
+    const nota = parseFloat(el.dataset.v);
+    const valor = parseFloat(el.dataset.valorNumerico) || 0;
+    if (!nota) { calcular(); return; }
+    const resto = valor % nota;
+    const erro = valor > 0 && Math.abs(resto) > 0.009 && Math.abs(resto - nota) > 0.009;
+    el.parentElement.classList.toggle('invalid', erro);
+    calcular();
+}
+
+function calcular() {
+    let somaNotas = 0;
+    let temErro = false;
+    document.querySelectorAll('.v-input').forEach(i => {
+        somaNotas += parseFloat(i.dataset.valorNumerico) || 0;
+        if (i.parentElement.classList.contains('invalid')) temErro = true;
+    });
+
+    const res = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
+    const gix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
+
+    const totalNoCaixa = somaNotas + res;
+    const dif = totalNoCaixa - gix;
+    const absDif = Math.abs(dif);
+
+    document.getElementById('total-geral').innerText = fmt(totalNoCaixa);
+    const dText = document.getElementById('total-dif');
+    const dTag = document.getElementById('tag-fluxo');
+    
+    dText.innerText = fmt(dif);
+    dText.className = "";
+    
+    if (dif === 0 || !document.getElementById('gix').value) dTag.innerText = "";
+    else if (dif > 0) dTag.innerText = "Sobra";
+    else dTag.innerText = "Falta";
+
+    if (absDif <= 5) dText.classList.add('dif-v');
+    else if (absDif <= 10) dText.classList.add('dif-l');
+    else dText.classList.add('dif-r');
+
+    document.getElementById('btn-submit').disabled = temErro;
+}
+
+function fmt(v) { return v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }); }
+
+function fecharModal() {
+    document.getElementById('overlay').style.display = 'none';
+}
+
+function enviar() {
+    const op = document.getElementById('operador').value;
+    const cx = document.getElementById('caixa').value;
+    if (!op || !cx) { alert("⚠️ Por favor, informe o Operador e o Caixa!"); return; }
+
+    document.getElementById('m-gix').innerText = fmt(parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0);
+    document.getElementById('m-total').innerText = document.getElementById('total-geral').innerText;
+    document.getElementById('m-dif').innerText = document.getElementById('total-dif').innerText;
+    document.getElementById('m-dif').className = document.getElementById('total-dif').className;
+    document.getElementById('overlay').style.display = 'flex';
+}
+
+montar();
+</script>
+
+</body>
+</html>
