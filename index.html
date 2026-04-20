@@ -36,7 +36,6 @@
         .dif-row { display: flex; align-items: baseline; gap: 8px; }
         .btn-gravar { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--cor-primaria); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
         
-        /* Modais */
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
         .modal { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; color: var(--cor-texto); }
         .modal h3 { margin: 0 0 15px 0; font-size: 18px; font-weight: 800; }
@@ -51,7 +50,6 @@
         .dif-l { color: var(--alerta) !important; }
         .dif-r { color: var(--perigo) !important; }
 
-        /* Caixinhas de Sangria */
         .sangria-sidebar { background: white; color: var(--perigo); padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 700; text-align: center; margin-bottom: 10px; display: none; line-height: 1.4; }
         .sangria-modal { color: var(--perigo); font-size: 11px; font-weight: 700; margin: 15px 0 5px 0; display: none; }
     </style>
@@ -135,8 +133,6 @@ function aplicarMascara(el) {
     let val = el.value.replace(/[^\d,]/g, ""); el.value = val;
     let num = parseFloat(val.replace(",", ".")) || 0;
     el.dataset.valorNumerico = num;
-    
-    // BLOQUEIO DE MÚLTIPLOS REATIVADO
     const nota = parseFloat(el.dataset.v);
     if (nota) {
         const resto = num % nota;
@@ -155,23 +151,14 @@ function calcular() {
     const res = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
     const gix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
     const total = soma + res; const dif = total - gix;
-    
     document.getElementById('total-geral').innerText = fmt(total);
     const dText = document.getElementById('total-dif');
     const sinal = dif > 0 ? "+ " : (dif < 0 ? "- " : "");
     dText.innerText = sinal + fmt(Math.abs(dif));
     dText.className = "";
-    
     const absD = Math.abs(dif);
-    if (absD <= 5) dText.classList.add('dif-v'); 
-    else if (absD <= 15) dText.classList.add('dif-l'); 
-    else dText.classList.add('dif-r');
-
-    // AVISO NA SIDEBAR (CAIXA BRANCA)
+    if (absD <= 5) dText.classList.add('dif-v'); else if (absD <= 15) dText.classList.add('dif-l'); else dText.classList.add('dif-r');
     document.getElementById('sidebar-sangria-msg').style.display = (total > 1200) ? 'block' : 'none';
-    
-    // Desabilitar gravar se houver múltiplos errados
-    document.getElementById('btn-submit').disabled = document.querySelectorAll('.invalid').length > 0;
 }
 
 function fmt(v) { return v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }); }
@@ -182,8 +169,10 @@ function fecharAviso() { document.getElementById('modal-aviso').style.display = 
 function abrirResumo() {
     const op = document.getElementById('operador').value; const cx = document.getElementById('caixa').value;
     const lojaId = document.getElementById('select-loja-manual')?.value || new URLSearchParams(window.location.search).get('loja');
-    if (!op || !cx || !lojaId) { mostrarAviso("Atenção", "Preencha Loja, Operador e Caixa."); return; }
     
+    if (!op || !cx || !lojaId) { mostrarAviso("Atenção", "Preencha Loja, Operador e Caixa."); return; }
+    if (document.querySelectorAll('.invalid').length > 0) { mostrarAviso("Erro de Valor", "Existem campos destacados em vermelho. O valor digitado deve ser múltiplo da nota correspondente."); return; }
+
     const vGix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
     const vRes = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
     const vTotal = parseFloat(document.getElementById('total-geral').innerText.replace(/[R$\s.]/g, "").replace(",", "."));
@@ -197,8 +186,6 @@ function abrirResumo() {
     const mDif = document.getElementById('m-dif');
     mDif.innerText = (realDif > 0 ? "+ " : (realDif < 0 ? "- " : "")) + fmt(Math.abs(realDif));
     mDif.className = document.getElementById('total-dif').className;
-
-    // AVISO NO MODAL
     document.getElementById('modal-sangria-msg').style.display = (vTotal > 1200) ? 'block' : 'none';
     document.getElementById('modal-resumo').style.display = 'flex';
 }
