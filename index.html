@@ -21,6 +21,7 @@
         .card-valor input { width: 100%; border: none; padding: 6px 12px; font-size: 30px; font-weight: 800; text-align: right; outline: none; }
         .reserva-destaque { border: 2px solid #F6AD55; background: #FFFAF0; }
         .reserva-destaque span { background: #F6AD55; color: #fff; }
+        .invalid { border: 2px solid var(--perigo) !important; background: #FFF5F5 !important; }
         .sidebar { display: flex; flex-direction: column; gap: 10px; }
         .card-lateral { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
         .header-loja { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--cor-fundo); padding-bottom: 8px; margin-bottom: 8px; gap: 10px; }
@@ -32,8 +33,10 @@
         .resultados { background: #1A202C; color: #fff; border-radius: 10px; padding: 14px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
         #total-geral { font-size: 34px; font-weight: 900; display: block; }
         #total-dif { font-size: 26px; font-weight: 800; }
+        .dif-row { display: flex; align-items: baseline; gap: 8px; }
         .btn-gravar { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--cor-primaria); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
         
+        /* Modais */
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
         .modal { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; color: var(--cor-texto); }
         .modal h3 { margin: 0 0 15px 0; font-size: 18px; font-weight: 800; }
@@ -48,7 +51,9 @@
         .dif-l { color: var(--alerta) !important; }
         .dif-r { color: var(--perigo) !important; }
 
-        .sangria-alerta { color: var(--perigo); font-size: 11px; font-weight: 700; margin: 10px 0; display: none; text-align: center; line-height: 1.3; }
+        /* Caixinhas de Sangria */
+        .sangria-sidebar { background: white; color: var(--perigo); padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 700; text-align: center; margin-bottom: 10px; display: none; line-height: 1.4; }
+        .sangria-modal { color: var(--perigo); font-size: 11px; font-weight: 700; margin: 15px 0 5px 0; display: none; }
     </style>
 </head>
 <body>
@@ -62,9 +67,7 @@
         <div class="modal-row"><label>Reserva:</label> <span id="m-res"></span></div>
         <div class="modal-row"><label>Contagem Final:</label> <span id="m-total"></span></div>
         <div class="modal-row" style="border:none"><label>Diferença:</label> <span id="m-dif"></span></div>
-        
-        <div id="modal-sangria-msg" class="sangria-alerta">⚠️ Valor acima do recomendado. Considere fazer uma transferência.</div>
-        
+        <div id="modal-sangria-msg" class="sangria-modal">⚠️ Valor acima do recomendado. Considere fazer uma transferência.</div>
         <button class="btn-modal btn-confirmar" id="btn-envio" onclick="executarEnvioReal()">GRAVAR E FINALIZAR</button>
         <button class="btn-modal btn-cancelar" onclick="fecharResumo()">VOLTAR</button>
     </div>
@@ -83,10 +86,8 @@
             <div><div class="resumo-info"><label>Total no Caixa</label><span id="total-geral">R$ 0,00</span></div>
                 <div class="resumo-info"><label>Diferença</label><div class="dif-row"><span id="total-dif">R$ 0,00</span></div></div>
             </div>
-            
-            <div id="sidebar-sangria-msg" class="sangria-alerta">⚠️ Valor acima do recomendado. Considere fazer uma transferência.</div>
-            
-            <button class="btn-gravar" onclick="abrirResumo()">GRAVAR</button>
+            <div id="sidebar-sangria-msg" class="sangria-sidebar">⚠️ Valor acima do recomendado. Considere fazer uma transferência.</div>
+            <button class="btn-gravar" id="btn-submit" onclick="abrirResumo()">GRAVAR</button>
         </div>
     </div>
 </div>
@@ -110,7 +111,7 @@ function inicializarLojas() {
     if (lojaId && configsLojas[lojaId]) renderizarInputsLoja(lojaId);
     else {
         let s = `<select id="select-loja-manual" onchange="renderizarInputsLoja(this.value)"><option value="">Loja...</option>`;
-        Object.keys(configsLojas).forEach(k => s += `<option value="${k}">Loja ${k}</option>`);
+        Object.keys(configsLojas).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(k => s += `<option value="${k}">Loja ${k}</option>`);
         document.getElementById('loja-ui').innerHTML = s + `</select>`;
         renderizarInputsLoja("");
     }
@@ -132,7 +133,15 @@ function renderizarInputsLoja(id) {
 
 function aplicarMascara(el) {
     let val = el.value.replace(/[^\d,]/g, ""); el.value = val;
-    el.dataset.valorNumerico = parseFloat(val.replace(",", ".")) || 0;
+    let num = parseFloat(val.replace(",", ".")) || 0;
+    el.dataset.valorNumerico = num;
+    
+    // BLOQUEIO DE MÚLTIPLOS REATIVADO
+    const nota = parseFloat(el.dataset.v);
+    if (nota) {
+        const resto = num % nota;
+        el.parentElement.classList.toggle('invalid', num > 0 && Math.abs(resto) > 0.009 && Math.abs(resto - nota) > 0.009);
+    }
     calcular();
 }
 
@@ -149,7 +158,6 @@ function calcular() {
     
     document.getElementById('total-geral').innerText = fmt(total);
     const dText = document.getElementById('total-dif');
-    
     const sinal = dif > 0 ? "+ " : (dif < 0 ? "- " : "");
     dText.innerText = sinal + fmt(Math.abs(dif));
     dText.className = "";
@@ -159,8 +167,11 @@ function calcular() {
     else if (absD <= 15) dText.classList.add('dif-l'); 
     else dText.classList.add('dif-r');
 
-    // Monitor do aviso de sangria na sidebar
+    // AVISO NA SIDEBAR (CAIXA BRANCA)
     document.getElementById('sidebar-sangria-msg').style.display = (total > 1200) ? 'block' : 'none';
+    
+    // Desabilitar gravar se houver múltiplos errados
+    document.getElementById('btn-submit').disabled = document.querySelectorAll('.invalid').length > 0;
 }
 
 function fmt(v) { return v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }); }
@@ -183,14 +194,12 @@ function abrirResumo() {
     
     document.getElementById('m-gix').innerText = fmt(vGix); document.getElementById('m-res').innerText = fmt(vRes);
     document.getElementById('m-total').innerText = fmt(vTotal); 
-    
     const mDif = document.getElementById('m-dif');
     mDif.innerText = (realDif > 0 ? "+ " : (realDif < 0 ? "- " : "")) + fmt(Math.abs(realDif));
     mDif.className = document.getElementById('total-dif').className;
 
-    // Alerta de sangria no Modal
+    // AVISO NO MODAL
     document.getElementById('modal-sangria-msg').style.display = (vTotal > 1200) ? 'block' : 'none';
-
     document.getElementById('modal-resumo').style.display = 'flex';
 }
 
