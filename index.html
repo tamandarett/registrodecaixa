@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="robots" content="noindex, nofollow">
-    
     <title>Calculadora de Caixa - Tamandaré Tintas</title>
     <link rel="icon" type="image/png" href="./favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -17,21 +16,38 @@
         * { box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background-color: var(--cor-fundo); color: var(--cor-texto); margin: 0; padding: 8px; height: 100vh; overflow: hidden; display: flex; justify-content: center; }
         .dashboard { display: grid; grid-template-columns: 1fr 340px; gap: 12px; width: 100%; max-width: 1500px; height: 100%; }
-        .secao-notas { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); gap: 8px; height: 100%; }
+        
+        /* Grade original de 5 linhas para não espremer */
+        .secao-notas { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            grid-template-rows: repeat(5, 1fr); 
+            gap: 8px; 
+            height: 100%; 
+        }
+
         .card-valor { background: #fff; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; overflow: hidden; transition: all 0.2s; }
-        
         .card-valor:focus-within { border-color: var(--destaque-azul); box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2); background: #EBF8FF; }
-        
         .card-valor span { background: #EDF2F7; padding: 0 10px; height: 100%; display: flex; align-items: center; font-weight: 800; font-size: 13px; min-width: 75px; border-right: 1px solid var(--border); }
         .card-valor input { width: 100%; border: none; padding: 6px 12px; font-size: 30px; font-weight: 800; text-align: right; outline: none; background: transparent; }
+        
         .reserva-destaque { border: 2px solid #F6AD55; background: #FFFAF0; }
         .reserva-destaque span { background: #F6AD55; color: #fff; }
+        
+        /* Histórico ocupando apenas os 2 espaços restantes da linha 5 */
+        .card-historico { grid-column: span 2; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; overflow: hidden; }
+        .card-historico h4 { margin: 0 0 5px 0; font-size: 10px; text-transform: uppercase; color: #64748B; border-bottom: 1px solid #EDF2F7; }
+        .tabela-hist { width: 100%; border-collapse: collapse; font-size: 9px; table-layout: fixed; }
+        .tabela-hist th { text-align: left; color: #94A3B8; padding-bottom: 2px; }
+        .tabela-hist td { padding: 3px 0; border-bottom: 1px solid #F8FAFC; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hist-v { color: var(--ok); } .hist-l { color: var(--alerta); } .hist-r { color: var(--perigo); }
+
         .invalid { border: 2px solid var(--perigo) !important; background: #FFF5F5 !important; }
         .sidebar { display: flex; flex-direction: column; gap: 10px; }
         .card-lateral { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
         .header-loja { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--cor-fundo); padding-bottom: 8px; margin-bottom: 8px; gap: 10px; }
         .header-loja img { height: 30px; }
-        .header-loja #txt-loja { font-weight: 800; color: var(--cor-primaria); font-size: 16px; white-space: nowrap; }
+        .header-loja #txt-loja { font-weight: 800; color: var(--cor-primaria); font-size: 16px; }
         label { display: block; font-size: 10px; font-weight: 700; color: #64748B; margin-bottom: 3px; }
         .input-sidebar { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-weight: 600; margin-bottom: 10px; font-size: 14px; outline: none; }
         .input-sidebar:focus { border-color: var(--destaque-azul); background: #EBF8FF; }
@@ -39,25 +55,18 @@
         .resultados { background: #1A202C; color: #fff; border-radius: 10px; padding: 14px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
         #total-geral { font-size: 34px; font-weight: 900; display: block; }
         #total-dif { font-size: 26px; font-weight: 800; }
-        .dif-row { display: flex; align-items: baseline; gap: 8px; }
         .btn-gravar { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--cor-primaria); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
         
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
         .modal { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; color: var(--cor-texto); }
-        .modal h3 { margin: 0 0 15px 0; font-size: 18px; font-weight: 800; }
         .modal-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #EDF2F7; }
         .modal-row label { font-size: 12px; margin: 0; color: #718096; }
         .modal-row span { font-weight: 800; font-size: 15px; }
         .btn-modal { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 10px; }
         .btn-confirmar { background: #2D3748; color: #fff; }
         .btn-cancelar { background: #EDF2F7; color: #4A5568; }
-
-        .dif-v { color: var(--ok) !important; }
-        .dif-l { color: var(--alerta) !important; }
-        .dif-r { color: var(--perigo) !important; }
-
-        .sangria-sidebar { background: white; color: var(--perigo); padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 700; text-align: center; margin-bottom: 10px; display: none; line-height: 1.4; }
-        .sangria-modal { color: var(--perigo); font-size: 11px; font-weight: 700; margin: 15px 0 5px 0; display: none; }
+        .sangria-alerta { color: var(--perigo); font-size: 11px; font-weight: 700; margin: 10px 0; display: none; }
+        .sangria-sidebar { background: white; color: var(--perigo); padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 700; text-align: center; margin-bottom: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -71,9 +80,7 @@
         <div class="modal-row"><label>Reserva:</label> <span id="m-res"></span></div>
         <div class="modal-row"><label>Contagem Final:</label> <span id="m-total"></span></div>
         <div class="modal-row" style="border:none"><label>Diferença:</label> <span id="m-dif"></span></div>
-        
-        <div id="modal-sangria-msg" class="sangria-modal">⚠️ Valor acima do recomendado. Considere fazer uma transferência.</div>
-        
+        <div id="modal-sangria-msg" class="sangria-alerta">⚠️ Valor acima do recomendado. Considere fazer uma transferência.</div>
         <button class="btn-modal btn-confirmar" id="btn-envio" onclick="executarEnvioReal()">GRAVAR E FINALIZAR</button>
         <button class="btn-modal btn-cancelar" onclick="fecharResumo()">VOLTAR</button>
     </div>
@@ -106,40 +113,15 @@ let dadosEnvio = null;
 
 function montar() {
     const grid = document.getElementById('grade-notas');
-    valoresCédulas.forEach(v => { 
-        // autocomplete="off" adicionado nos campos de notas
-        grid.innerHTML += `<div class="card-valor"><span>R$ ${v.toFixed(2)}</span><input type="text" class="v-input nav-field" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0" autocomplete="off"></div>`; 
-    });
-    // autocomplete="off" adicionado na reserva
-    grid.innerHTML += `<div class="card-valor reserva-destaque" style="grid-column: span 2;"><span>RESERVA</span><input type="text" id="reserva" class="nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0" autocomplete="off"></div>`;
+    valoresCédulas.forEach(v => { grid.innerHTML += `<div class="card-valor"><span>R$ ${v.toFixed(2)}</span><input type="text" class="v-input nav-field" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0" autocomplete="off"></div>`; });
+    
+    // Linha 5: Reserva (1 col) + Histórico (2 cols)
+    grid.innerHTML += `<div class="card-valor reserva-destaque"><span>RESERVA</span><input type="text" id="reserva" class="nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0" autocomplete="off"></div>`;
+    grid.innerHTML += `<div class="card-historico"><h4>Últimas Contagens (Cache)</h4><table class="tabela-hist"><thead><tr><th>HORA</th><th>OP.</th><th>CX.</th><th>TOTAL</th><th>DIF.</th></tr></thead><tbody id="corpo-hist"></tbody></table></div>`;
+
     inicializarLojas();
     configurarNavegacao();
-}
-
-function inicializarLojas() {
-    const params = new URLSearchParams(window.location.search);
-    const lojaId = params.get('loja');
-    if (lojaId && configsLojas[lojaId]) renderizarInputsLoja(lojaId);
-    else {
-        let s = `<select id="select-loja-manual" class="input-sidebar" onchange="renderizarInputsLoja(this.value)"><option value="">Loja...</option>`;
-        Object.keys(configsLojas).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(k => s += `<option value="${k}">Loja ${k}</option>`);
-        document.getElementById('loja-ui').innerHTML = s + `</select>`;
-        renderizarInputsLoja("");
-    }
-}
-
-function renderizarInputsLoja(id) {
-    const container = document.getElementById('container-caixa');
-    document.getElementById('txt-loja').innerText = id ? "LOJA " + id : "LOJA --";
-    if (id && configsLojas[id]) {
-        const cxs = configsLojas[id];
-        if (cxs.length === 1) container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" value="${cxs[0]}" readonly style="background:#f1f5f9;">`;
-        else {
-            let s = `<select id="caixa" class="input-sidebar"><option value="">Selecione...</option>`;
-            cxs.forEach(c => s += `<option value="${c}">${c}</option>`);
-            container.innerHTML = s + `</select>`;
-        }
-    } else container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" placeholder="...">`;
+    renderizarHistorico();
 }
 
 function aplicarMascara(el) {
@@ -164,84 +146,109 @@ function calcular() {
     const res = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
     const gix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
     const total = soma + res; const dif = total - gix;
-    
     document.getElementById('total-geral').innerText = fmt(total);
     const dText = document.getElementById('total-dif');
     const sinal = dif > 0 ? "+ " : (dif < 0 ? "- " : "");
     dText.innerText = sinal + fmt(Math.abs(dif));
     dText.className = "";
-    
     const absD = Math.abs(dif);
-    if (absD <= 5) dText.classList.add('dif-v'); 
-    else if (absD <= 15) dText.classList.add('dif-l'); 
-    else dText.classList.add('dif-r');
-
+    if (absD <= 5) dText.classList.add('dif-v'); else if (absD <= 15) dText.classList.add('dif-l'); else dText.classList.add('dif-r');
     document.getElementById('sidebar-sangria-msg').style.display = (total > 1200) ? 'block' : 'none';
 }
 
 function fmt(v) { return v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }); }
 
-function mostrarAviso(t, m) { document.getElementById('aviso-titulo').innerText = t; document.getElementById('aviso-corpo').innerText = m; document.getElementById('modal-aviso').style.display = 'flex'; }
-function fecharAviso() { document.getElementById('modal-aviso').style.display = 'none'; }
+function salvarNoCache(dados) {
+    let hist = JSON.parse(localStorage.getItem('tt_hist') || "[]");
+    const novoItem = {
+        data: new Date().toLocaleTimeString('pt-br', {hour:'2-digit', minute:'2-digit'}),
+        op: dados.operador.split(' ')[0],
+        cx: dados.caixa,
+        total: fmt(dados.totalContado),
+        dif: (dados.diferenca > 0 ? "+" : (dados.diferenca < 0 ? "-" : "")) + fmt(Math.abs(dados.diferenca)),
+        cor: Math.abs(dados.diferenca) <= 5 ? 'hist-v' : (Math.abs(dados.diferenca) <= 15 ? 'hist-l' : 'hist-r')
+    };
+    hist.unshift(novoItem);
+    if (hist.length > 3) hist.pop();
+    localStorage.setItem('tt_hist', JSON.stringify(hist));
+}
+
+function renderizarHistorico() {
+    const hist = JSON.parse(localStorage.getItem('tt_hist') || "[]");
+    const corpo = document.getElementById('corpo-hist');
+    corpo.innerHTML = hist.map(item => `<tr><td>${item.data}</td><td>${item.op}</td><td>${item.cx}</td><td>${item.total}</td><td class="${item.cor}">${item.dif}</td></tr>`).join('') || '<tr><td colspan="5" style="text-align:center; color:#CBD5E1; padding-top:5px;">Vazio</td></tr>';
+}
 
 function abrirResumo() {
     const op = document.getElementById('operador').value; const cx = document.getElementById('caixa').value;
     const lojaId = document.getElementById('select-loja-manual')?.value || new URLSearchParams(window.location.search).get('loja');
-    
     if (!op || !cx || !lojaId) { mostrarAviso("Atenção", "Preencha Loja, Operador e Caixa."); return; }
-    if (document.querySelectorAll('.invalid').length > 0) { mostrarAviso("Erro de Valor", "Existem campos destacados em vermelho. O valor digitado deve ser múltiplo da nota correspondente."); return; }
-
+    if (document.querySelectorAll('.invalid').length > 0) { mostrarAviso("Erro", "Valores múltiplos incorretos."); return; }
+    
     const vGix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
     const vRes = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
     const vTotal = parseFloat(document.getElementById('total-geral').innerText.replace(/[R$\s.]/g, "").replace(",", "."));
-    const vDif = parseFloat(document.getElementById('total-dif').innerText.replace(/[R$\s.+-]/g, "").replace(",", "."));
-    const realDif = vTotal - vGix;
+    const vDif = vTotal - vGix;
 
-    dadosEnvio = { loja: lojaId, operador: op, caixa: cx, saldoGix: vGix, reserva: vRes, totalContado: vTotal, diferenca: realDif, status: (realDif === 0 ? "OK" : (realDif > 0 ? "SOBRA" : "FALTA")) };
+    dadosEnvio = { loja: lojaId, operador: op, caixa: cx, saldoGix: vGix, reserva: vRes, totalContado: vTotal, diferenca: vDif, status: (vDif === 0 ? "OK" : (vDif > 0 ? "SOBRA" : "FALTA")) };
     
     document.getElementById('m-gix').innerText = fmt(vGix); document.getElementById('m-res').innerText = fmt(vRes);
     document.getElementById('m-total').innerText = fmt(vTotal); 
     const mDif = document.getElementById('m-dif');
-    mDif.innerText = (realDif > 0 ? "+ " : (realDif < 0 ? "- " : "")) + fmt(Math.abs(realDif));
+    mDif.innerText = (vDif > 0 ? "+ " : (vDif < 0 ? "- " : "")) + fmt(Math.abs(vDif));
     mDif.className = document.getElementById('total-dif').className;
-
     document.getElementById('modal-sangria-msg').style.display = (vTotal > 1200) ? 'block' : 'none';
     document.getElementById('modal-resumo').style.display = 'flex';
 }
-
-function fecharResumo() { document.getElementById('modal-resumo').style.display = 'none'; }
 
 async function executarEnvioReal() {
     const btn = document.getElementById('btn-envio'); btn.disabled = true; btn.innerText = "GRAVANDO...";
     try {
         await fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dadosEnvio) });
-        btn.innerText = "ENVIADO COM SUCESSO!"; btn.style.background = "var(--ok)";
-        setTimeout(() => location.reload(), 1500);
-    } catch (e) { mostrarAviso("Erro", "Falha no envio."); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
+        salvarNoCache(dadosEnvio);
+        btn.innerText = "SUCESSO!"; btn.style.background = "var(--ok)";
+        setTimeout(() => location.reload(), 1200);
+    } catch (e) { mostrarAviso("Erro", "Falha no envio."); btn.disabled = false; btn.innerText = "TENTAR"; }
 }
 
+function inicializarLojas() {
+    const params = new URLSearchParams(window.location.search);
+    const lojaId = params.get('loja');
+    if (lojaId && configsLojas[lojaId]) renderizarInputsLoja(lojaId);
+    else {
+        let s = `<select id="select-loja-manual" class="input-sidebar" onchange="renderizarInputsLoja(this.value)"><option value="">Loja...</option>`;
+        Object.keys(configsLojas).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(k => s += `<option value="${k}">Loja ${k}</option>`);
+        document.getElementById('loja-ui').innerHTML = s + `</select>`;
+        renderizarInputsLoja("");
+    }
+}
+function renderizarInputsLoja(id) {
+    const container = document.getElementById('container-caixa');
+    document.getElementById('txt-loja').innerText = id ? "LOJA " + id : "LOJA --";
+    if (id && configsLojas[id]) {
+        const cxs = configsLojas[id];
+        if (cxs.length === 1) container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" value="${cxs[0]}" readonly style="background:#f1f5f9;">`;
+        else {
+            let s = `<select id="caixa" class="input-sidebar"><option value="">Selecione...</option>`;
+            cxs.forEach(c => s += `<option value="${c}">${c}</option>`);
+            container.innerHTML = s + `</select>`;
+        }
+    } else container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" placeholder="...">`;
+}
 function configurarNavegacao() {
     setTimeout(() => {
         const fields = Array.from(document.querySelectorAll('.nav-field'));
-        fields.forEach((field, index) => {
-            field.addEventListener('keydown', (e) => {
-                const isNext = (e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'ArrowRight');
-                const isPrev = (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || (e.key === 'Enter' && e.shiftKey));
-
-                if (isNext) {
-                    e.preventDefault();
-                    const next = fields[index + 1];
-                    if (next) next.focus();
-                    else if (e.key === 'Enter') abrirResumo();
-                } else if (isPrev) {
-                    e.preventDefault();
-                    const prev = fields[index - 1];
-                    if (prev) prev.focus();
-                }
+        fields.forEach((f, i) => {
+            f.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); (fields[i+1] || fields[0]).focus(); }
+                if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); (fields[i-1] || fields[fields.length-1]).focus(); }
             });
         });
     }, 500);
 }
+function mostrarAviso(t, m) { document.getElementById('aviso-titulo').innerText = t; document.getElementById('aviso-corpo').innerText = m; document.getElementById('modal-aviso').style.display = 'flex'; }
+function fecharAviso() { document.getElementById('modal-aviso').style.display = 'none'; }
+function fecharResumo() { document.getElementById('modal-resumo').style.display = 'none'; }
 
 montar();
 </script>
