@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Calculadora de Caixa - Tamandaré Tintas</title>
+    <link rel="icon" type="image/png" href="./favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -18,7 +19,6 @@
         }
 
         * { box-sizing: border-box; }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--cor-fundo);
@@ -84,160 +84,38 @@
 
         .invalid { border: 2px solid var(--perigo) !important; background: #FFF5F5 !important; }
 
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .card-lateral {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 12px;
-        }
-
-        .header-loja {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--cor-fundo);
-            padding-bottom: 8px;
-            margin-bottom: 8px;
-            gap: 10px;
-        }
-
+        .sidebar { display: flex; flex-direction: column; gap: 10px; }
+        .card-lateral { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+        .header-loja { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--cor-fundo); padding-bottom: 8px; margin-bottom: 8px; gap: 10px; }
         .header-loja img { height: 30px; }
         .header-loja #txt-loja { font-weight: 800; color: var(--cor-primaria); font-size: 16px; white-space: nowrap; }
 
-        #select-loja-manual {
-            font-size: 12px;
-            padding: 4px;
-            border-radius: 4px;
-            border: 1px solid var(--border);
-            font-weight: 600;
-            width: 100%;
-        }
+        label { display: block; font-size: 10px; font-weight: 700; color: #64748B; margin-bottom: 3px; }
+        .input-sidebar { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-weight: 600; margin-bottom: 10px; font-size: 14px; }
 
-        label {
-            display: block;
-            font-size: 10px;
-            font-weight: 700;
-            color: #64748B;
-            margin-bottom: 3px;
-        }
+        #gix { height: 48px; font-size: 26px; font-weight: 800; text-align: right; color: var(--cor-primaria); background: #FFF5F5; border-color: #FED7D7; }
 
-        .input-sidebar {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        #gix {
-            height: 48px;
-            font-size: 26px;
-            font-weight: 800;
-            text-align: right;
-            color: var(--cor-primaria);
-            background: #FFF5F5;
-            border-color: #FED7D7;
-        }
-
-        .resultados {
-            background: #1A202C;
-            color: #fff;
-            border-radius: 10px;
-            padding: 14px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
+        .resultados { background: #1A202C; color: #fff; border-radius: 10px; padding: 14px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
         .resumo-info { margin-bottom: 12px; }
+        #total-geral { font-size: 34px; font-weight: 900; display: block; }
+        #total-dif { font-size: 26px; font-weight: 800; }
+        .dif-row { display: flex; align-items: baseline; gap: 8px; }
+        .label-fluxo { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--destaque-azul); letter-spacing: 1px; }
 
-        #total-geral { 
-            font-size: 34px; 
-            font-weight: 900; 
-            display: block; 
-        }
-
-        #total-dif { 
-            font-size: 26px; 
-            font-weight: 800; 
-        }
-
-        .dif-row {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-        }
-
-        .label-fluxo {
-            font-size: 11px; 
-            font-weight: 800;
-            text-transform: uppercase;
-            color: var(--destaque-azul); 
-            letter-spacing: 1px;
-        }
-
-        .btn-gravar {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            background: var(--cor-primaria);
-            color: #fff;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
+        .btn-gravar { width: 100%; padding: 14px; border: none; border-radius: 10px; background: var(--cor-primaria); color: #fff; font-size: 16px; font-weight: 800; cursor: pointer; }
         .btn-gravar:disabled { background: #4A5568; cursor: not-allowed; opacity: 0.6; }
 
         .dif-v { color: var(--ok); }
         .dif-l { color: var(--alerta); }
         .dif-r { color: var(--perigo); }
 
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal {
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 450px;
-            text-align: center;
-            position: relative;
-        }
-
-        .btn-close {
-            position: absolute;
-            top: 12px;
-            right: 18px;
-            font-size: 26px;
-            font-weight: 400;
-            color: #A0AEC0;
-            cursor: pointer;
-            line-height: 1;
-        }
-
-        .modal h3 { margin-top: 0; color: #1A202C; font-size: 22px; border-bottom: 2px solid #F1F5F9; padding-bottom: 12px; }
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; }
+        .modal { background: white; padding: 30px; border-radius: 16px; width: 100%; max-width: 450px; text-align: center; position: relative; color: var(--cor-texto); }
+        .btn-close { position: absolute; top: 12px; right: 18px; font-size: 26px; font-weight: 400; color: #A0AEC0; cursor: pointer; }
+        .modal h3 { margin-top: 0; font-size: 22px; border-bottom: 2px solid #F1F5F9; padding-bottom: 12px; }
         .modal-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #EDF2F7; }
         .modal-row label { font-size: 13px; margin: 0; color: #718096; }
-        .modal-row span { font-weight: 800; font-size: 17px; color: #1A202C; }
+        .modal-row span { font-weight: 800; font-size: 17px; }
     </style>
 </head>
 
@@ -246,130 +124,97 @@
 <div id="overlay">
     <div class="modal">
         <span class="btn-close" title="Abortar" onclick="fecharModal()">&times;</span>
-        <h3>✅ Gravado com Sucesso</h3>
-        <div class="modal-row"><label>Saldo GIX (Sistema):</label> <span id="m-gix"></span></div>
+        <h3>Resumo do Fechamento</h3>
+        <div class="modal-row"><label>Saldo GIX:</label> <span id="m-gix"></span></div>
+        <div class="modal-row"><label>Reserva:</label> <span id="m-res"></span></div>
         <div class="modal-row"><label>Contagem Final:</label> <span id="m-total"></span></div>
         <div class="modal-row" style="border:none"><label>Diferença:</label> <span id="m-dif"></span></div>
-        <button class="btn-gravar" style="margin-top: 25px; background: #2D3748;" onclick="location.reload()">NOVO LANÇAMENTO</button>
+        <button class="btn-gravar" id="btn-finalizar" style="margin-top: 25px; background: #2D3748;" onclick="executarEnvioReal()">GRAVAR E FINALIZAR</button>
     </div>
 </div>
 
 <div class="dashboard">
     <div class="secao-notas" id="grade-notas"></div>
-
     <div class="sidebar">
         <div class="card-lateral">
             <div class="header-loja">
-                <img src="https://via.placeholder.com/140x30?text=Tamandare">
-                <div id="loja-ui">
-                    <span id="txt-loja">LOJA --</span>
-                </div>
+                <img src="./logo.png" onerror="this.src='https://via.placeholder.com/140x30?text=Logo+Não+Encontrada'">
+                <div id="loja-ui"><span id="txt-loja">LOJA --</span></div>
             </div>
-
             <label>Operador</label>
             <input type="text" id="operador" class="input-sidebar" placeholder="Digite o nome...">
-
             <label>Caixa</label>
             <div id="container-caixa"></div>
-
             <label>Saldo GIX (Sistema)</label>
             <input type="text" id="gix" class="input-sidebar" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0,00">
         </div>
-
         <div class="resultados">
             <div>
-                <div class="resumo-info">
-                    <label>Total no Caixa (Cédulas + Reserva)</label>
-                    <span id="total-geral">R$ 0,00</span>
-                </div>
-
-                <div class="resumo-info">
-                    <label>Diferença vs Sistema</label>
-                    <div class="dif-row">
-                        <span id="total-dif">R$ 0,00</span>
-                        <span id="tag-fluxo" class="label-fluxo"></span>
-                    </div>
+                <div class="resumo-info"><label>Total no Caixa (Cédulas + Reserva)</label><span id="total-geral">R$ 0,00</span></div>
+                <div class="resumo-info"><label>Diferença vs Sistema</label>
+                    <div class="dif-row"><span id="total-dif">R$ 0,00</span><span id="tag-fluxo" class="label-fluxo"></span></div>
                 </div>
             </div>
-
-            <button class="btn-gravar" id="btn-submit" onclick="enviar()">GRAVAR</button>
+            <button class="btn-gravar" id="btn-submit" onclick="abrirResumo()">GRAVAR</button>
         </div>
     </div>
 </div>
 
 <script>
-const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbzhd7CS7JoF3QRuw9eLi7K3HFsxK9erwRdoD2fjyNwvXP1P7QMJXmh7t1jY-Hg-FCKO/exec";
+// COLOQUE SUA URL DO GOOGLE ABAIXO
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbyZp5lalN8hd-qZDzELqIe27qxOLePQ4NMBtTSBFZlOPrgzCq3QZ-2wjoU-Ms-_VHUW/exec";
 
 const valoresCédulas = [200, 100, 50, 20, 10, 5, 2, 1, 0.50, 0.25, 0.10, 0.05];
-const configsLojas = {
-    "02": ["220", "230"], "05": ["510", "520"], "09": ["910"], 
-    "10": ["100"], "12": ["12"], "13": ["113"], "14": ["114"], 
-    "15": ["115"], "16": ["16"]
-};
+const configsLojas = { "02": ["220", "230"], "05": ["510", "520"], "09": ["910"], "10": ["100"], "12": ["12"], "13": ["113"], "14": ["114"], "15": ["115"], "16": ["16"] };
+let dadosParaEnvio = null;
 
 function montar() {
     const grid = document.getElementById('grade-notas');
     valoresCédulas.forEach(v => {
-        grid.innerHTML += `
-        <div class="card-valor">
-            <span>R$ ${v.toFixed(2)}</span>
-            <input type="text" class="v-input" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0">
-        </div>`;
+        grid.innerHTML += `<div class="card-valor"><span>R$ ${v.toFixed(2)}</span><input type="text" class="v-input" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0"></div>`;
     });
-
-    grid.innerHTML += `
-    <div class="card-valor reserva-destaque" style="grid-column: span 2;">
-        <span>RESERVA</span>
-        <input type="text" id="reserva" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0">
-    </div>`;
-
+    grid.innerHTML += `<div class="card-valor reserva-destaque" style="grid-column: span 2;"><span>RESERVA</span><input type="text" id="reserva" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0"></div>`;
     inicializarLojas();
-    iniciarNavegacao();
 }
 
 function inicializarLojas() {
     const params = new URLSearchParams(window.location.search);
     const lojaId = params.get('loja');
     const lojaUI = document.getElementById('loja-ui');
-
-    if (lojaId && configsLojas[lojaId]) {
-        renderizarInputsLoja(lojaId);
-    } else {
-        let selectLoja = `<select id="select-loja-manual" onchange="renderizarInputsLoja(this.value)">
-                            <option value="">Selecione a Loja</option>`;
-        Object.keys(configsLojas).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(key => {
-            selectLoja += `<option value="${key}">Loja ${key}</option>`;
-        });
-        selectLoja += `</select>`;
-        lojaUI.innerHTML = selectLoja;
+    if (lojaId && configsLojas[lojaId]) { renderizarInputsLoja(lojaId); } 
+    else {
+        let select = `<select id="select-loja-manual" onchange="renderizarInputsLoja(this.value)"><option value="">Selecione a Loja</option>`;
+        Object.keys(configsLojas).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(k => select += `<option value="${k}">Loja ${k}</option>`);
+        lojaUI.innerHTML = select + `</select>`;
         renderizarInputsLoja(""); 
     }
 }
 
-function renderizarInputsLoja(lojaId) {
-    const containerCaixa = document.getElementById('container-caixa');
-    const txtLoja = document.getElementById('txt-loja');
-    if (txtLoja) txtLoja.innerText = lojaId ? "LOJA " + lojaId : "LOJA --";
-
-    if (lojaId && configsLojas[lojaId]) {
-        const caixas = configsLojas[lojaId];
-        if (caixas.length === 1) {
-            containerCaixa.innerHTML = `<input type="text" id="caixa" class="input-sidebar" value="${caixas[0]}" readonly style="background:#f1f5f9;">`;
-        } else {
-            let select = `<select id="caixa" class="input-sidebar"><option value="">Selecione...</option>`;
-            caixas.forEach(c => select += `<option value="${c}">${c}</option>`);
-            containerCaixa.innerHTML = select + `</select>`;
+function renderizarInputsLoja(id) {
+    const container = document.getElementById('container-caixa');
+    const txt = document.getElementById('txt-loja');
+    if (txt) txt.innerText = id ? "LOJA " + id : "LOJA --";
+    if (id && configsLojas[id]) {
+        const cxs = configsLojas[id];
+        if (cxs.length === 1) container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" value="${cxs[0]}" readonly style="background:#f1f5f9;">`;
+        else {
+            let s = `<select id="caixa" class="input-sidebar"><option value="">Selecione...</option>`;
+            cxs.forEach(c => s += `<option value="${c}">${c}</option>`);
+            container.innerHTML = s + `</select>`;
         }
-    } else {
-        containerCaixa.innerHTML = `<input type="text" id="caixa" class="input-sidebar" placeholder="Aguardando loja...">`;
-    }
+    } else container.innerHTML = `<input type="text" id="caixa" class="input-sidebar" placeholder="Aguardando loja...">`;
 }
 
 function aplicarMascara(el) {
     let val = el.value.replace(/[^\d,]/g, "");
     el.value = val;
     el.dataset.valorNumerico = parseFloat(val.replace(",", ".")) || 0;
-    validarMultiplo(el);
+    const nota = parseFloat(el.dataset.v);
+    if (nota) {
+        const resto = el.dataset.valorNumerico % nota;
+        el.parentElement.classList.toggle('invalid', el.dataset.valorNumerico > 0 && Math.abs(resto) > 0.009 && Math.abs(resto - nota) > 0.009);
+    }
+    calcular();
 }
 
 function formatarAoSair(el) {
@@ -377,97 +222,60 @@ function formatarAoSair(el) {
     el.value = v > 0 ? v.toLocaleString('pt-br', { minimumFractionDigits: 2 }) : "";
 }
 
-function validarMultiplo(el) {
-    const nota = parseFloat(el.dataset.v);
-    const val = parseFloat(el.dataset.valorNumerico) || 0;
-    if (nota) {
-        const resto = val % nota;
-        const erro = val > 0 && Math.abs(resto) > 0.009 && Math.abs(resto - nota) > 0.009;
-        el.parentElement.classList.toggle('invalid', erro);
-    }
-    calcular();
-}
-
 function calcular() {
     let soma = 0;
-    let erro = false;
-    document.querySelectorAll('.v-input').forEach(i => {
-        soma += parseFloat(i.dataset.valorNumerico) || 0;
-        if (i.parentElement.classList.contains('invalid')) erro = true;
-    });
-
+    document.querySelectorAll('.v-input').forEach(i => soma += parseFloat(i.dataset.valorNumerico) || 0);
     const res = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
-    const gixVal = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
+    const gix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
     const total = soma + res;
-    const dif = total - gixVal;
-
+    const dif = total - gix;
     document.getElementById('total-geral').innerText = fmt(total);
     const dText = document.getElementById('total-dif');
     const dTag = document.getElementById('tag-fluxo');
-    
-    dText.innerText = fmt(dif);
-    dText.className = "";
+    dText.innerText = fmt(dif); dText.className = "";
     if (dif === 0 || !document.getElementById('gix').value) dTag.innerText = "";
-    else if (dif > 0) dTag.innerText = "Sobra";
-    else dTag.innerText = "Falta";
-
+    else dTag.innerText = dif > 0 ? "Sobra" : "Falta";
     const absD = Math.abs(dif);
-    if (absD <= 5) dText.classList.add('dif-v');
-    else if (absD <= 10) dText.classList.add('dif-l');
-    else dText.classList.add('dif-r');
-
-    document.getElementById('btn-submit').disabled = erro;
+    if (absD <= 5) dText.classList.add('dif-v'); else if (absD <= 10) dText.classList.add('dif-l'); else dText.classList.add('dif-r');
 }
 
 function fmt(v) { return v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }); }
 
-async function enviar() {
+function abrirResumo() {
     const op = document.getElementById('operador').value;
     const cx = document.getElementById('caixa').value;
     const lojaSelect = document.getElementById('select-loja-manual');
     const lojaId = lojaSelect ? lojaSelect.value : new URLSearchParams(window.location.search).get('loja');
-
-    if (!op || !cx || !lojaId) { alert("Preencha Operador, Caixa e Loja!"); return; }
-
-    const btn = document.getElementById('btn-submit');
-    btn.disabled = true; btn.innerText = "ENVIANDO...";
+    if (!op || !cx || !lojaId) { alert("⚠️ Informe Loja, Operador e Caixa!"); return; }
 
     const vGix = parseFloat(document.getElementById('gix').dataset.valorNumerico) || 0;
     const vRes = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
     const vTotal = parseFloat(document.getElementById('total-geral').innerText.replace(/[R$\s.]/g, "").replace(",", "."));
     const vDif = parseFloat(document.getElementById('total-dif').innerText.replace(/[R$\s.]/g, "").replace(",", "."));
-    
-    const dados = {
-        loja: lojaId, operador: op, caixa: cx, saldoGix: vGix,
-        reserva: vRes, totalContado: vTotal, diferenca: vDif,
-        status: vDif === 0 ? "OK" : document.getElementById('tag-fluxo').innerText
-    };
 
+    dadosParaEnvio = { loja: lojaId, operador: op, caixa: cx, saldoGix: vGix, reserva: vRes, totalContado: vTotal, diferenca: vDif, status: vDif === 0 ? "OK" : document.getElementById('tag-fluxo').innerText };
+
+    document.getElementById('m-gix').innerText = fmt(vGix);
+    document.getElementById('m-res').innerText = fmt(vRes);
+    document.getElementById('m-total').innerText = fmt(vTotal);
+    document.getElementById('m-dif').innerText = fmt(vDif);
+    document.getElementById('m-dif').className = document.getElementById('total-dif').className;
+    document.getElementById('overlay').style.display = 'flex';
+}
+
+async function executarEnvioReal() {
+    const btn = document.getElementById('btn-finalizar');
+    btn.disabled = true; btn.innerText = "GRAVANDO...";
     try {
-        await fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dados) });
-        document.getElementById('m-gix').innerText = fmt(vGix);
-        document.getElementById('m-total').innerText = fmt(vTotal);
-        document.getElementById('m-dif').innerText = fmt(vDif);
-        document.getElementById('m-dif').className = document.getElementById('total-dif').className;
-        document.getElementById('overlay').style.display = 'flex';
+        await fetch(URL_SCRIPT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dadosParaEnvio) });
+        alert("✅ Dados enviados com sucesso!");
+        location.reload();
     } catch (e) {
-        alert("Erro ao salvar!"); btn.disabled = false; btn.innerText = "GRAVAR";
+        alert("❌ Erro ao enviar!"); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE";
     }
 }
 
 function fecharModal() { document.getElementById('overlay').style.display = 'none'; }
-
-function iniciarNavegacao() {
-    setTimeout(() => {
-        const campos = [...document.querySelectorAll('.v-input'), document.getElementById('reserva'), document.getElementById('gix')];
-        campos.forEach((el, i) => {
-            el.addEventListener('keydown', e => {
-                if (e.key === 'Enter') { e.preventDefault(); campos[i+1]?.focus(); }
-            });
-        });
-    }, 100);
-}
-
 montar();
 </script>
 </body>
