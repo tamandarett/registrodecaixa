@@ -30,7 +30,7 @@
         .card-historico { grid-column: span 2; background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; overflow: hidden; }
         .card-historico h4 { margin: 0 0 5px 0; font-size: 10px; text-transform: uppercase; color: #64748B; border-bottom: 1px solid #EDF2F7; }
         .tabela-hist { width: 100%; border-collapse: collapse; font-size: 9px; table-layout: fixed; }
-        .tabela-hist th { text-align: left; color: #94A3B8; padding-bottom: 2px; }
+        .tabela-hist th { text-align: left; color: #94A3B8; padding-bottom: 2px; font-size: 8px; }
         .tabela-hist td { padding: 3px 0; border-bottom: 1px solid #F8FAFC; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .invalid { border: 2px solid var(--perigo) !important; background: #FFF5F5 !important; }
@@ -122,7 +122,7 @@ function montar() {
     const grid = document.getElementById('grade-notas');
     valoresCédulas.forEach(v => { grid.innerHTML += `<div class="card-valor"><span>R$ ${v.toFixed(2)}</span><input type="text" class="v-input nav-field" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0" autocomplete="off"></div>`; });
     grid.innerHTML += `<div class="card-valor reserva-destaque"><span>RESERVA</span><input type="text" id="reserva" class="nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0" autocomplete="off"></div>`;
-    grid.innerHTML += `<div class="card-historico"><h4>Últimas Contagens (Cache)</h4><table class="tabela-hist"><thead><tr><th>DATA/HORA</th><th>OP.</th><th>CX.</th><th>TOTAL</th><th>DIF.</th></tr></thead><tbody id="corpo-hist"></tbody></table></div>`;
+    grid.innerHTML += `<div class="card-historico"><h4>Últimas Contagens (Cache)</h4><table class="tabela-hist"><thead><tr><th>DATA/HORA</th><th>OP.</th><th>CX.</th><th>GIX</th><th>TOTAL</th><th>DIF.</th></tr></thead><tbody id="corpo-hist"></tbody></table></div>`;
     inicializarLojas();
     configurarNavegacao();
     renderizarHistorico();
@@ -168,6 +168,7 @@ function salvarNoCache(dados) {
         data: new Date().toLocaleString('pt-br', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'}),
         op: dados.operador.split(' ')[0],
         cx: dados.caixa,
+        gix: fmt(dados.saldoGix),
         total: fmt(dados.totalContado),
         dif: (dados.diferenca > 0 ? "+" : (dados.diferenca < 0 ? "-" : "")) + fmt(Math.abs(dados.diferenca)),
         cor: Math.abs(dados.diferenca) <= 5 ? 'dif-v' : (Math.abs(dados.diferenca) <= 15 ? 'dif-l' : 'dif-r')
@@ -180,7 +181,7 @@ function salvarNoCache(dados) {
 function renderizarHistorico() {
     const hist = JSON.parse(localStorage.getItem('tt_hist') || "[]");
     const corpo = document.getElementById('corpo-hist');
-    corpo.innerHTML = hist.map(item => `<tr><td>${item.data}</td><td>${item.op}</td><td>${item.cx}</td><td>${item.total}</td><td class="${item.cor}">${item.dif}</td></tr>`).join('') || '<tr><td colspan="5" style="text-align:center; color:#CBD5E1; padding-top:5px;">Vazio</td></tr>';
+    corpo.innerHTML = hist.map(item => `<tr><td>${item.data}</td><td>${item.op}</td><td>${item.cx}</td><td>${item.gix}</td><td>${item.total}</td><td class="${item.cor}">${item.dif}</td></tr>`).join('') || '<tr><td colspan="6" style="text-align:center; color:#CBD5E1; padding-top:5px;">Vazio</td></tr>';
 }
 
 function abrirResumo() {
@@ -192,7 +193,6 @@ function abrirResumo() {
     const vRes = parseFloat(document.getElementById('reserva').dataset.valorNumerico) || 0;
     const vTotal = parseFloat(document.getElementById('total-geral').innerText.replace(/[R$\s.]/g, "").replace(",", "."));
     const vDif = vTotal - vGix;
-    // CORREÇÃO: Chave "diferenca" escrita corretamente agora
     dadosEnvio = { loja: lojaId, operador: op, caixa: cx, saldoGix: vGix, reserva: vRes, totalContado: vTotal, diferenca: vDif, status: (vDif === 0 ? "OK" : (vDif > 0 ? "SOBRA" : "FALTA")) };
     document.getElementById('m-gix').innerText = fmt(vGix); document.getElementById('m-res').innerText = fmt(vRes);
     document.getElementById('m-total').innerText = fmt(vTotal); 
