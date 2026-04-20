@@ -91,7 +91,13 @@
     <div class="secao-notas" id="grade-notas"></div>
     <div class="sidebar">
         <div class="card-lateral">
-            <div class="header-loja"><img src="./logo.png" onerror="this.src='https://via.placeholder.com/140x30?text=Logo'"><div id="loja-ui"><span id="txt-loja">LOJA --</span></div></div>
+            <div class="header-loja">
+                <img src="./logo.png" onerror="this.src='https://via.placeholder.com/140x30?text=Logo'">
+                <div id="loja-ui">
+                    <span id="txt-loja">LOJA --</span>
+                    <a href="#" onclick="localStorage.removeItem('tt_loja_fixa'); location.reload();" style="font-size: 9px; color: #94A3B8; text-decoration: none; margin-left: 5px;">(Trocar)</a>
+                </div>
+            </div>
             <label>Operador</label><input type="text" id="operador" class="input-sidebar nav-field" placeholder="Nome...">
             <label>Caixa</label><div id="container-caixa"></div>
             <label>Saldo GIX (Sistema)</label><input type="text" id="gix" class="input-sidebar nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0,00" autocomplete="off">
@@ -208,13 +214,18 @@ async function executarEnvioReal() {
 
 function inicializarLojas() {
     const params = new URLSearchParams(window.location.search);
-    let lojaId = params.get('loja'); 
-    if (!lojaId) lojaId = localStorage.getItem('tt_loja_fixa');
-
-    if (lojaId && configsLojas[lojaId]) {
-        renderizarInputsLoja(lojaId);
+    const lojaURL = params.get('loja'); 
+    
+    if (lojaURL && configsLojas[lojaURL]) {
+        localStorage.setItem('tt_loja_fixa', lojaURL);
+        renderizarInputsLoja(lojaURL);
     } else {
-        pedirIdentificacaoLoja();
+        let lojaCache = localStorage.getItem('tt_loja_fixa');
+        if (lojaCache && configsLojas[lojaCache]) {
+            renderizarInputsLoja(lojaCache);
+        } else {
+            pedirIdentificacaoLoja();
+        }
     }
 }
 
