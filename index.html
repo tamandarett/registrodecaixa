@@ -122,7 +122,7 @@ function montar() {
     const grid = document.getElementById('grade-notas');
     valoresCédulas.forEach(v => { grid.innerHTML += `<div class="card-valor"><span>R$ ${v.toFixed(2)}</span><input type="text" class="v-input nav-field" data-v="${v}" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0" autocomplete="off"></div>`; });
     grid.innerHTML += `<div class="card-valor reserva-destaque"><span>RESERVA</span><input type="text" id="reserva" class="nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0" autocomplete="off"></div>`;
-    grid.innerHTML += `<div class="card-historico"><h4>Últimas Contagens (Cache)</h4><table class="tabela-hist"><thead><tr><th>DATA/HORA</th><th>OP.</th><th>CX.</th><th>GIX</th><th>TOTAL</th><th>DIF.</th></tr></thead><tbody id="corpo-hist"></tbody></table></div>`;
+    grid.innerHTML += `<div class="card-historico"><h4>Últimas Contagens Neste PC</h4><table class="tabela-hist"><thead><tr><th>DATA/HORA</th><th>OP.</th><th>CX.</th><th>GIX</th><th>TOTAL</th><th>DIF.</th></tr></thead><tbody id="corpo-hist"></tbody></table></div>`;
     inicializarLojas();
     configurarNavegacao();
     renderizarHistorico();
