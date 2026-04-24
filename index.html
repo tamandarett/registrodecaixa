@@ -39,6 +39,10 @@
         .header-loja { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--cor-fundo); padding-bottom: 8px; margin-bottom: 8px; gap: 10px; }
         .header-loja img { height: 30px; }
         .header-loja #txt-loja { font-weight: 800; color: var(--cor-primaria); font-size: 16px; }
+        
+        /* Ajuste para Caixa Alta Visual */
+        #operador { text-transform: uppercase; }
+
         label { display: block; font-size: 10px; font-weight: 700; color: #64748B; margin-bottom: 3px; }
         .input-sidebar { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-weight: 600; margin-bottom: 10px; font-size: 14px; outline: none; }
         .input-sidebar:focus { border-color: var(--destaque-azul); background: #EBF8FF; }
@@ -98,7 +102,7 @@
                     <a href="#" onclick="localStorage.removeItem('tt_loja_fixa'); location.reload();" style="font-size: 9px; color: #94A3B8; text-decoration: none; margin-left: 5px;">(Trocar)</a>
                 </div>
             </div>
-            <label>Operador</label><input type="text" id="operador" class="input-sidebar nav-field" placeholder="Nome...">
+            <label>Operador</label><input type="text" id="operador" class="input-sidebar nav-field" placeholder="NOME..." oninput="this.value = this.value.toUpperCase()">
             <label>Caixa</label><div id="container-caixa"></div>
             <label>Saldo GIX (Sistema)</label><input type="text" id="gix" class="input-sidebar nav-field" oninput="aplicarMascara(this)" onblur="formatarAoSair(this)" placeholder="0,00" autocomplete="off">
         </div>
